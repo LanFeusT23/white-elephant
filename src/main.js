@@ -4,6 +4,8 @@ import router from "./router/router"
 import store from "./store/store"
 import "./assets/tailwind.css"
 
+import "./firebase"
+
 createApp(App)
     .use(store)
     .use(router)
