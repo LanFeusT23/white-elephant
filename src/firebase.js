@@ -4,10 +4,12 @@ import "firebase/auth"
 import "firebase/storage"
 import firebaseSettings from "../firebase.json"
 
+export const projectId = "white-elephant-capps"
+
 const firebaseConfig = {
     apiKey: "AIzaSyCFBIaVxyPG83A7ljgFocElHpFBMkEWhM0",
     authDomain: "white-elephant-capps.firebaseapp.com",
-    projectId: "white-elephant-capps",
+    projectId,
     storageBucket: "white-elephant-capps.appspot.com",
     messagingSenderId: "665520767358",
     appId: "1:665520767358:web:6da4eb0ff59e86745fb32f",
