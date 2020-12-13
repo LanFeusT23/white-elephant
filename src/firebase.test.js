@@ -1,11 +1,6 @@
 import { assertFails, assertSucceeds } from "@firebase/rules-unit-testing"
 
-import {
-    setup,
-    teardown,
-    getNormalFirestore,
-    getAdminFirestore
-} from "./firebase-testing-helpers"
+import { setup, teardown, getNormalFirestore, getAdminFirestore } from "./firebase-testing-helpers"
 
 describe("Database rules", () => {
     // Applies only to tests in this describe block

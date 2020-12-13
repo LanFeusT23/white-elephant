@@ -1,10 +1,4 @@
-import {
-    apps,
-    loadFirestoreRules,
-    initializeTestApp,
-    clearFirestoreData,
-    initializeAdminApp
-} from "@firebase/rules-unit-testing"
+import { apps, loadFirestoreRules, initializeTestApp, clearFirestoreData, initializeAdminApp } from "@firebase/rules-unit-testing"
 
 import { projectId } from "../src/firebase"
 

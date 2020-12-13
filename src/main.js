@@ -1,12 +1,38 @@
 import { createApp } from "vue"
+import localforage from "localforage"
 import App from "./App.vue"
-import router from "./router/router"
-import store from "./store/store"
+import router, { HOME } from "./router"
+import store from "./store"
 import "./assets/tailwind.css"
+import { auth } from "./firebase"
+;(async () => {
+    localforage.config({
+        name: "white-elephant",
+        storeName: "white-elephant-store"
+    })
 
-import "./firebase"
+    const user = await localforage.getItem("user")
 
-createApp(App)
-    .use(store)
-    .use(router)
-    .mount("#app")
+    store.commit("setUser", user)
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            const userObject = {
+                id: user.uid,
+                email: user.email,
+                displayName: user.displayName
+            }
+            localforage.setItem("user", userObject)
+            store.commit("setUser", userObject)
+        } else {
+            store.commit("setUser", null)
+            localforage.setItem("user", null)
+            router.push(HOME)
+        }
+    })
+
+    createApp(App)
+        .use(store)
+        .use(router)
+        .mount("#app")
+})()

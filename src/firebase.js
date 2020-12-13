@@ -34,9 +34,5 @@ if (process.env.VUE_APP_EMULATE) {
         ssl: false
     })
 
-    firebase
-        .auth()
-        .useEmulator(
-            `http://localhost:${firebaseSettings.emulators.auth.port}/`
-        )
+    firebase.auth().useEmulator(`http://localhost:${firebaseSettings.emulators.auth.port}/`)
 }
