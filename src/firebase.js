@@ -2,9 +2,12 @@ import firebase from "firebase/app"
 import "firebase/firestore"
 import "firebase/auth"
 import "firebase/storage"
+// @ts-ignore
 import firebaseSettings from "../firebase.json"
 
 export const projectId = "white-elephant-capps"
+
+import store from "@/store"
 
 const firebaseConfig = {
     apiKey: "AIzaSyCFBIaVxyPG83A7ljgFocElHpFBMkEWhM0",
@@ -35,4 +38,10 @@ if (process.env.VUE_APP_EMULATE) {
     })
 
     firebase.auth().useEmulator(`http://localhost:${firebaseSettings.emulators.auth.port}/`)
+
+    // @ts-ignore
+
+    window.bootstrap = async () => {
+        const userId = store.state?.user?.uid
+    }
 }
