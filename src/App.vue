@@ -1,10 +1,16 @@
 <template>
-    <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <Navigation class="flex items-center justify-between h-24 px-8 shadow-xl bg-red-1000"></Navigation>
+    <router-view class="flex-1" />
 </template>
 
-<style lang="scss">
-</style>
+<script>
+    import Navigation from "@/components/shared/Navigation"
+
+    export default {
+        setup () {
+            return {
+                Navigation
+            }
+        }
+    }
+</script>
