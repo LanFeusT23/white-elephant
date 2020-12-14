@@ -2,7 +2,7 @@
     <div class="flex flex-col event-create-page justify-items-center">
         <div>
             <label for="event-name">Event name</label>
-            <input id="event-name" type="text" class="text-black" />
+            <input id="event-name" v-model="eventName" type="text" class="text-black" />
         </div>
         <Button @click="createEvent"> Create Event </Button>
     </div>
