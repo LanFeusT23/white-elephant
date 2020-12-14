@@ -11,6 +11,7 @@
         "serveProd": "vue-cli-service serve"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.1",
         "core-js": "^3.6.5",
         "firebase": "^8.2.0",
         "localforage": "^1.9.0",
