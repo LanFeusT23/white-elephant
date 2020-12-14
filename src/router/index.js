@@ -15,6 +15,10 @@ export const EVENT = {
     name: "Event"
 }
 
+export const EVENTCREATE = {
+    name: "EventCreate"
+}
+
 export const HOME = {
     name: "Home"
 }
@@ -32,6 +36,14 @@ const routes = [
         ...LANDING,
         path: "/",
         component: Landing
+    },
+    {
+        ...EVENTCREATE,
+        path: "/create-event",
+        component: () => import(/* webpackChunkName: "eventCreate" */ "../views/EventCreate.vue"),
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         ...EVENT,

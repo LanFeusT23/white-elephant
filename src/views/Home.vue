@@ -16,12 +16,11 @@ export default {
     name: "Home",
 
     setup() {
-
         return {
             UserSelectedGift,
             GiftsList,
-            UserEventList
+            UserEventList,
         }
-    }
+    },
 }
 </script>
