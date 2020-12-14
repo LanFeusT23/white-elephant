@@ -3,3 +3,11 @@
 @tailwind components;
 
 @tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: "Nerko One";
+        font-weight: 400;
+        src: url("./fonts/NerkoOne-Regular.ttf") format("ttf");
+    }
+}

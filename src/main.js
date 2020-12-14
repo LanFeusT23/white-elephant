@@ -3,7 +3,7 @@ import localforage from "localforage"
 import App from "./App.vue"
 import router, { HOME } from "./router"
 import store from "./store"
-import "./assets/tailwind.css"
+import "./assets/styles.scss"
 import { auth } from "./firebase"
 ;(async () => {
     localforage.config({
