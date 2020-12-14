@@ -30,8 +30,7 @@ service cloud.firestore {
 
   function validateUnwrappedGift(userId){
     return isAuthenticated() && 
-            request.auth.uid == userId && 
-            request.resource.data.keys().hasOnly(["imageUrl"])
+            request.auth.uid == userId
   }
 
   function isAuthenticated(){
@@ -43,8 +42,7 @@ service cloud.firestore {
   }
 
   function validateEvent(){
-    return request.resource.data.keys().hasAll(["name", "createdBy", "maxSteals", "currentPlayer"]) &&
-            isMine(request.resource.data) &&
+    return isMine(request.resource.data) &&
             isEventNameValid()
   }
 
