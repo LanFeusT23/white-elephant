@@ -18,7 +18,7 @@ import { auth } from "./firebase"
     auth.onAuthStateChanged(user => {
         if (user) {
             const userObject = {
-                id: user.uid,
+                uid: user.uid,
                 email: user.email,
                 displayName: user.displayName
             }

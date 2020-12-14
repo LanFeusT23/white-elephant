@@ -15,22 +15,12 @@ service cloud.firestore {
         allow write: if request.auth.uid == userId
       }
 
-      match /unwrappedGifts/{userId}{
+      match /gifts/{userId}{
         allow read: if isAuthenticated();
-        allow write: if validateUnwrappedGift(userId);
-      }
-
-      match /wrappedGifts/{userId}{
-        allow read: if isAuthenticated();
-        allow write: if isAuthenticated();
+        allow write: if request.auth.uid == userId
       }
 
     }
-  }
-
-  function validateUnwrappedGift(userId){
-    return isAuthenticated() && 
-            request.auth.uid == userId
   }
 
   function isAuthenticated(){
