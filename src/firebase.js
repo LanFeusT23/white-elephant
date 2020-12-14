@@ -40,69 +40,8 @@ if (process.env.VUE_APP_EMULATE) {
     firebase.auth().useEmulator(`http://localhost:${firebaseSettings.emulators.auth.port}/`)
 
     // @ts-ignore
+
     window.bootstrap = async () => {
         const userId = store.state?.user?.uid
-
-        const eventRef = await firestore.collection("events").add({
-            name: "CAPPS WHITE ELEPHANT 2020",
-            createdBy: userId,
-            currentPlayer: null,
-            maxSteals: 3,
-            gameStarted: false
-        })
-
-        eventRef
-            .collection("users")
-            .doc(userId)
-            .set({
-                imageUrl: "null",
-                order: null,
-                readyToPlay: false,
-                selectedGift: false
-            })
-
-        eventRef
-            .collection("gifts")
-            .doc(userId)
-            .set({
-                imageUrl: null,
-                description: "a toy"
-            })
-
-        eventRef
-            .collection("users")
-            .doc("user-a")
-            .set({
-                imageUrl: "null",
-                order: null,
-                readyToPlay: false,
-                selectedGift: false
-            })
-
-        eventRef
-            .collection("gifts")
-            .doc("user-a")
-            .set({
-                imageUrl: null,
-                description: "a toy"
-            })
-
-        eventRef
-            .collection("users")
-            .doc("user-b")
-            .set({
-                imageUrl: "null",
-                order: null,
-                readyToPlay: false,
-                selectedGift: false
-            })
-
-        eventRef
-            .collection("gifts")
-            .doc("user-b")
-            .set({
-                imageUrl: null,
-                description: "a toy"
-            })
     }
 }
