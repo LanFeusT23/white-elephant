@@ -38,6 +38,7 @@ export default {
             background: url("../../assets/images/wrapped-gift.png") center center no-repeat;
             background-size: contain;
             filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));
+            cursor: pointer;
         }
 
         &--unwrapped {

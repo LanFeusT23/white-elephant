@@ -17,8 +17,10 @@
                 Start Event
             </Button>
 
-            <div class="text-xl">
-                {{ user?.displayName }}
+            <div class="flex items-center gap-4">
+                <span class="text-xl">{{ user?.displayName }}</span>
+
+                <span class="text-sm cursor-pointer" v-if="user" @click="signOut">Log Out</span>
             </div>
         </div>
 
@@ -28,16 +30,21 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from "vuex"
+import { auth } from "@/firebase"
 import Button from "@/components/shared/Button"
 
 export default {
     setup () {
         const store = useStore()
+        const signOut = () => {
+            auth.signOut()
+        }
 
         const user = computed(() => store.state.user);
 
         return {
             user,
+            signOut,
             Button
         }
     }

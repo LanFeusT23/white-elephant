@@ -1,40 +1,67 @@
 import { createRouter, createWebHistory } from "vue-router"
-import Home from "../views/Home.vue"
+import Landing from "../views/Landing.vue"
 import { auth } from "@/firebase"
 import store from "@/store"
 
-export const HOME = {
-    path: "/",
-    name: "Home"
-}
-
 export const ABOUT = {
-    path: "/about",
     name: "About"
 }
 
 export const LOGIN = {
-    path: "/login",
     name: "Login"
+}
+
+export const EVENT = {
+    name: "Event"
+}
+
+export const HOME = {
+    name: "Home"
+}
+
+export const LANDING = {
+    name: "Landing"
+}
+
+export const UPLOAD = {
+    name: "Upload"
 }
 
 const routes = [
     {
-        ...HOME,
-        component: Home,
+        ...LANDING,
+        path: "/",
+        component: Landing
+    },
+    {
+        ...EVENT,
+        path: "/events/:eventId",
+        props: true,
+        component: () => import(/* webpackChunkName: "event" */ "../views/Event.vue"),
+        children: [
+            {
+                ...HOME,
+                path: "",
+                component: () => import(/* webpackChunkName: "home" */ "../views/Home.vue")
+            },
+            {
+                ...UPLOAD,
+                path: "upload",
+                component: () => import(/* webpackChunkName: "upload" */ "../views/Upload.vue")
+            }
+        ],
         meta: {
             requiresAuth: true
         }
     },
     {
         ...ABOUT,
-        component: () => import(/* webpackChunkName: "about" */ "../views/About.vue"),
-        meta: {
-            requiresAuth: true
-        }
+        path: "/about",
+        component: () => import(/* webpackChunkName: "about" */ "../views/About.vue")
     },
     {
         ...LOGIN,
+        path: "/login",
         component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue")
     }
 ]
@@ -54,7 +81,7 @@ export const routerGuard = (to, from, next) => {
     if (goingToProtectedRoute && !isAuthenticated) {
         next({ ...LOGIN, query: { redirect: to.fullPath } })
     } else if (to.name === LOGIN.name && isAuthenticated) {
-        next(HOME)
+        next(LANDING)
     } else {
         next()
     }

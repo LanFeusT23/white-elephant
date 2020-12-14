@@ -1,7 +1,7 @@
 import { createApp } from "vue"
 import localforage from "localforage"
 import App from "./App.vue"
-import router, { HOME } from "./router"
+import router, { LANDING } from "./router"
 import store from "./store"
 import "./assets/styles.scss"
 import { auth } from "./firebase"
@@ -15,6 +15,8 @@ import { auth } from "./firebase"
 
     store.commit("setUser", user)
 
+    let initialized = false
+
     auth.onAuthStateChanged(user => {
         if (user) {
             const userObject = {
@@ -27,8 +29,13 @@ import { auth } from "./firebase"
         } else {
             store.commit("setUser", null)
             localforage.setItem("user", null)
-            router.push(HOME)
+
+            if (initialized) {
+                router.push(LANDING)
+            }
         }
+
+        initialized = true
     })
 
     createApp(App)
