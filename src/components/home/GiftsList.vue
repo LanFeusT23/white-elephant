@@ -5,8 +5,6 @@
 
     <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
 
-    <!-- {{ finalGifts.map(x=>x.selectedByName) }} -->
-
     <teleport to="#modal-portal-target" v-if="isOpenModal">
         <GiftsModal @close-modal="closeModal" :gifts="finalGifts" :selectedGiftIndex="selectedGiftIndex"> </GiftsModal>
     </teleport>

@@ -3,9 +3,6 @@
         <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img rounded-xl">
             <img v-if="isClaimed" :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
         </div>
-        
-    {{ isClaimed }}
-    {{ selectedByName ?? "null" }}
 
         <div v-if="isClaimed" class="truncate gift__username whitespace-nowrap">
             {{ selectedByName }}

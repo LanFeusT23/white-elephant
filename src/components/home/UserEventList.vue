@@ -1,5 +1,5 @@
 <template>
-    <div class="p-8 pt-5 w-72 bg-red-1000 rounded-xl">
+    <div class="p-8 pt-5 w-72 bg-red-1000 bg-opacity-90 rounded-xl">
         <div class="flex justify-center mb-4">
             <Button @click="goToUpload">
                 {{ uploadText }}

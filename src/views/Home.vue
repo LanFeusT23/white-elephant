@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full gap-7 home">
+    <div class="flex gap-7 home">
         <UserSelectedGift></UserSelectedGift>
 
         <GiftsList></GiftsList>

@@ -9,12 +9,14 @@
 
             <Gift big v-bind="currentGift">
                 <div class="flex justify-center mt-4">
-                    <Button class="text-xl" v-if="!isAlreadyUsersGift && !currentGift.notAvailable" @click="claimGift">
+                    <Button class="text-xl" v-if="canBeClaimed" @click="claimGift">
                         Claim this gift
                     </Button>
+
                     <div class="text-xl text-yellow-300" secondary v-if="currentGift.notAvailable">
                         This gift is no longer available :(
                     </div>
+
                     <div class="text-xl" v-if="isAlreadyUsersGift">
                         You claimed this gift!
                     </div>
@@ -27,8 +29,6 @@
             </i>
         </div>
         
-            {{ currentGift }}
-
         <div class="absolute cursor-pointer top-4 right-6" @click="closeModal">
             <i class="fa fa-times"></i>
         </div>
@@ -88,6 +88,10 @@ export default {
                 })
         }
 
+        const canBeClaimed = computed(() => {
+            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && store.state.event.currentUser === store.state.user.uid
+        })
+
         return {
             Modal,
             Button,
@@ -99,6 +103,7 @@ export default {
             nextGift,
             gifts,
             currentGift,
+            canBeClaimed,
             currentIndex
         }
     }

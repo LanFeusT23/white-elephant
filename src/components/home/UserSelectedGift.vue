@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center justify-center gap-4 w-96 h-96 bg-red-1000 rounded-xl">
+    <div class="flex flex-col items-center justify-center gap-4 w-96 h-96 bg-red-1000 bg-opacity-90 rounded-xl">
         <img src="../../assets/images/sad-santa.png" alt="Sad Santa">
         <div class="text-4xl">
             No gifts selected yet!
