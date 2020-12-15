@@ -12,6 +12,7 @@
 import UserSelectedGift from "@/components/home/UserSelectedGift"
 import GiftsList from "@/components/home/GiftsList"
 import UserEventList from "@/components/home/UserEventList"
+
 export default {
     name: "Home",
 
@@ -19,7 +20,7 @@ export default {
         return {
             UserSelectedGift,
             GiftsList,
-            UserEventList,
+            UserEventList
         }
     },
 }

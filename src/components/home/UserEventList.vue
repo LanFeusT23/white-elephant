@@ -69,11 +69,11 @@ export default {
         })
 
         const hasJoined = computed(() => {
-            return users.value.some((x) => x.uid === uid)
+            return users.value.some((x) => x.id === uid)
         })
 
         const uploadText = computed(() => {
-            return hasJoined ? "Edit Gift" : "Join Event"
+            return hasJoined.value ? "Edit Gift" : "Join Event"
         })
 
         const goToUpload = () => {
@@ -85,7 +85,7 @@ export default {
             Button,
             users,
             goToUpload,
-            uploadText,
+            uploadText
         }
     },
 }

@@ -1,30 +1,51 @@
 <template>
     <div class="w-32 gift" :class="cssClasses">
-        <div class="w-full h-32 gift__img rounded-xl"></div>
-        <div class="truncate gift__username whitespace-nowrap">Firstname Lastname</div>
+        <div class="h-32 gift__img rounded-xl">
+            <img v-if="isClaimed" :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
+        </div>
+        <div v-if="isClaimed" class="truncate gift__username whitespace-nowrap">
+            Firstname Lastname
+        </div>
     </div>
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { computed, toRefs } from 'vue'
 export default {
     props: {
-        unwrapped: Boolean,
-        stolen: Number,
-        notAvailable: Boolean
+        unwrappedGiftUrl: String,
+        wrappedGiftUrl: {
+            type: String,
+            default: "../../assets/images/wrapped-gift.png"
+        },
+        stolenCount: Number,
+        notAvailable: Boolean,
+        displayName: String,
+        selectedBy: String
     },
     setup (props) {
-        const { unwrapped, stolen, notAvailable } = toRefs(props)
+        const { unwrappedGiftUrl, wrappedGiftUrl, stolenCount, notAvailable, selectedBy } = toRefs(props)
+
+        const isClaimed = computed(() => {
+            // return selectedBy.value !== "" && selectedBy.value != null
+            return true
+        })
+
+        // todo change
+        const giftUrl = computed(() => {
+            return isClaimed ? unwrappedGiftUrl.value : require(wrappedGiftUrl)
+        })
 
         const cssClasses = {
-            "gift--unwrapped": unwrapped.value,
             "gift--not-available": notAvailable.value,
-            "gift--stolen": stolen?.value === 1,
-            "gift--stolen-2": stolen?.value === 2
+            "gift--stolen": stolenCount?.value === 1,
+            "gift--stolen-2": stolenCount?.value === 2
         }
 
         return {
-            cssClasses
+            cssClasses,
+            giftUrl,
+            isClaimed
         }
     }
 }
@@ -34,16 +55,10 @@ export default {
     .gift {
         &__img {
             position: relative;
-            background: url("../../assets/images/wrapped-gift.png") center center no-repeat;
+            background-image: url("../../assets/images/unwrapped-gift.png");
             background-size: contain;
             filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));
             cursor: pointer;
-        }
-
-        &--unwrapped {
-            .gift__img {
-                background-image: url("../../assets/images/unwrapped-gift.png");
-            }
         }
 
         &--stolen, &--stolen-2 {
