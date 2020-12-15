@@ -15,7 +15,6 @@ export default {
     },
     setup (props) {
         const { unwrapped, stolen, notAvailable } = toRefs(props)
-        console.log(props);
 
         const cssClasses = {
             "gift--unwrapped": unwrapped.value,

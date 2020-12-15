@@ -48,6 +48,14 @@ export default {
             background: url("../assets/images/btn_google_signin_light_normal_web@2x.png") center center no-repeat;
             width: 382px;
             height: 92px;
+
+            &:hover {
+                background-image: url("../assets/images/btn_google_signin_light_focus_web@2x.png");
+            }
+
+            &:active {
+                background-image: url("../assets/images/btn_google_signin_light_pressed_web@2x.png");
+            }
         }
     }
 </style>
