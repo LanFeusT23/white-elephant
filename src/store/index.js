@@ -11,7 +11,7 @@ export default createStore({
     },
     getters: {
         isLoggedInUsersTurn: state => {
-            return state.event != null && state.event.currentUser === state.user?.uid
+            return state.event != null && state.event.currentPlayer === state.user?.uid
         }
     },
     actions: {},

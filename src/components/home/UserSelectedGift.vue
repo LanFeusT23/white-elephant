@@ -8,6 +8,7 @@
                 Your claimed gift!
             </div>
         </template>
+
         <template v-else>
             <img src="../../assets/images/sad-santa.png" alt="Sad Santa">
             <div class="text-4xl">
@@ -21,7 +22,7 @@
 import { firestore } from '@/firebase'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 export default {
     setup () {
         const route = useRoute()
@@ -31,12 +32,16 @@ export default {
 
         const eventRef = firestore.collection("events").doc(route.params.eventId)
         const giftsRef = eventRef.collection("gifts")
-        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null).limit(1)
+        const unsubscribeGifts = giftsRef
+            .where("selectedBy", "==", store.state.user.uid)
+            .limit(1)
             .onSnapshot((snapshot) => {
                claimedGift.value = snapshot.docs[0]?.data()
-        })
+        }   )
 
-        
+        onUnmounted(() => {
+            unsubscribeGifts()
+        })
 
         return {
             claimedGift

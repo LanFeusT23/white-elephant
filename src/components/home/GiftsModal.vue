@@ -66,7 +66,6 @@ export default {
         })
 
         const isAlreadyUsersGift = computed(() => {
-            console.log("selectedBy", currentGift.value);
             return currentGift.value.selectedBy === store.state.user.uid
         })
 
@@ -77,14 +76,12 @@ export default {
         const previousGift = () => {
             if (selectedGiftIndex.value > 0) {
                 emit("update:selectedGiftIndex", selectedGiftIndex.value - 1)
-                // selectedGiftIndex.value = selectedGiftIndex.value - 1
             }
         }
 
         const nextGift = () => {
             if (selectedGiftIndex.value < gifts.value.length) {
                 emit("update:selectedGiftIndex", selectedGiftIndex.value + 1)
-                // selectedGiftIndex.value = selectedGiftIndex.value + 1
             }
         }
 
@@ -97,19 +94,20 @@ export default {
                 })
         }
 
-        const canBeClaimed = computed(() => {
-            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && store.getters.isLoggedInUsersTurn
+        const isLoggedInUsersTurn = computed(() => {
+            return store.getters.isLoggedInUsersTurn
         })
 
-        watch(currentGift, () => {
-            console.log(currentGift.value);
-        }, { immediate: true })
+        const canBeClaimed = computed(() => {
+            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && isLoggedInUsersTurn.value
+        })
 
         return {
             Modal,
             Button,
             Gift,
             isAlreadyUsersGift,
+            isLoggedInUsersTurn,
             closeModal,
             claimGift,
             previousGift,
