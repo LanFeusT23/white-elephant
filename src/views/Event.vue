@@ -13,7 +13,7 @@
                     <i class="fa fa-gift" />Your turn to pick a gift<i class="fa fa-gift" />
                 </div>
 
-                <Button v-if="isAdminUser && !event?.started" @click="startEvent">
+                <Button v-if="isAdminUser" :disabled="event?.started" @click="startEvent">
                     Start Event
                 </Button>
                 <div v-else></div>
@@ -62,9 +62,9 @@ export default {
         }, { immediate: true })
 
         const startEvent = async () => {
-            firestore.collection("events").doc(eventId.value).set({
+            firestore.collection("events").doc(eventId.value).update({
                 started: true
-            }, { merge: true })
+            })
         }
 
         return {

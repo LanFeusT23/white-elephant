@@ -1,11 +1,14 @@
 <template>
-    <div class="w-32 gift" :class="cssClasses">
-        <div class="h-32 gift__img rounded-xl">
+    <div class="gift" :class="cssClasses">
+        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img rounded-xl">
             <img v-if="isClaimed" :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
         </div>
+        
         <div v-if="isClaimed" class="truncate gift__username whitespace-nowrap">
-            Firstname Lastname
+            {{ selectedByName }}
         </div>
+
+        <slot></slot>
     </div>
 </template>
 
@@ -20,15 +23,15 @@ export default {
         },
         stolenCount: Number,
         notAvailable: Boolean,
-        displayName: String,
-        selectedBy: String
+        selectedByName: String,
+        selectedBy: String,
+        big: Boolean
     },
     setup (props) {
-        const { unwrappedGiftUrl, wrappedGiftUrl, stolenCount, notAvailable, selectedBy } = toRefs(props)
+        const { unwrappedGiftUrl, wrappedGiftUrl, big, selectedByName, stolenCount, notAvailable, selectedBy } = toRefs(props)
 
         const isClaimed = computed(() => {
-            // return selectedBy.value !== "" && selectedBy.value != null
-            return true
+            return selectedBy?.value !== "" && selectedBy?.value != null
         })
 
         // todo change
@@ -39,12 +42,15 @@ export default {
         const cssClasses = {
             "gift--not-available": notAvailable.value,
             "gift--stolen": stolenCount?.value === 1,
-            "gift--stolen-2": stolenCount?.value === 2
+            "gift--stolen-2": stolenCount?.value === 2,
+            "w-32": !big.value,
+            "w-96": big.value,
         }
 
         return {
             cssClasses,
             giftUrl,
+            selectedByName,
             isClaimed
         }
     }
