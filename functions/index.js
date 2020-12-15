@@ -189,10 +189,35 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userI
     const userId = context.params.userId
 
     const eventRef = firestore.collection("events").doc(eventId)
-    const usersQuery = eventRef.collection("users").doc(userId)
 
     //SELECTED BY CHANGES (PLAYER CHOSES A GIFT)
-    if (before.selectedBy !== after.selectedBy && before.selectedBy != null) {
-        //set next player
+    if (before.selectedBy !== after.selectedBy && after.selectedBy != null) {
+        //marks the person who just selected a gift
+        await eventRef
+            .collection("users")
+            .doc(after.selectedBy)
+            .update({
+                selectedGift: true
+            })
+
+        //gets the next player
+        const snap = await eventRef
+            .collection("users")
+            .where("selectedGift", "==", false)
+            .orderBy("order")
+            .limit(1)
+            .get()
+
+        if (!snap.empty) {
+            const user = snap.docs[0]
+
+            //set the next player on the event
+            eventRef.update({
+                currentPlayer: user.id
+            })
+        } else {
+            //ENABLE BONUS ROUND OF DEATH
+            console.log("NO MORE")
+        }
     }
 })
