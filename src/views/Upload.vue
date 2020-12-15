@@ -1,23 +1,26 @@
 <template>
-    <div class="text-lg">
+    <div class="text-lg w-96">
         <div class="text-4xl text-yellow-300">Upload your gift image!</div>
 
         <div class="mt-2">
             <div class="text-base">Unwrapped image url (required)</div>
-            <input v-model="unwrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text" />
+            <input v-model="unwrappedImageUrl" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" type="text" />
         </div>
 
         <div>
             <div class="text-base">Wrapped image url</div>
-            <input v-model="wrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text" />
+            <input v-model="wrappedImageUrl" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" type="text" />
         </div>
 
         <div class="mt-2">
             <div class="text-base">Brief description of the gift</div>
-            <textarea v-model="giftDescription" class="h-24 px-4 py-1 mb-2 text-black bg-white border rounded-lg w-96 focus:outline-none active:outline-none"></textarea>
+            <textarea v-model="giftDescription" class="w-full h-24 px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none"></textarea>
         </div>
 
-        <Button @click="upload" :disabled="disableButton">Upload</Button>
+        <div class="flex justify-between">
+            <Button @click="upload" :disabled="disableButton">Upload</Button>
+            <Button @click="goToEvent" secondary>Cancel</Button>
+        </div>
     </div>
 </template>
 
@@ -81,11 +84,16 @@ export default {
             router.push(HOME)
         }
 
+        const goToEvent = () => {
+            router.push(HOME)
+        }
+
         return {
             ...toRefs(formData),
             disableButton,
             upload,
             Button,
+            goToEvent
         }
     },
 }
