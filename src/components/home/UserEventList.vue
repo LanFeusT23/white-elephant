@@ -7,56 +7,69 @@
         </div>
 
         <ol class="pl-10 list-decimal">
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg opacity-50">Firstname Lastname</li>
-            <li class="relative text-lg active">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
-            <li class="relative text-lg ">Firstname Lastname</li>
+            <li v-for="user in users" :key="user.id" class="relative text-lg">{{ user.displayName }} - {{ user.readyToPlay ? "Ready" : "Not Ready" }}</li>
         </ol>
     </div>
 </template>
 
 <script>
 import Button from "@/components/shared/Button"
-import { computed, ref } from "vue"
+import { computed, ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { firestore } from "@/firebase"
 import { UPLOAD } from "@/router"
 
 export default {
-    setup () {
+    setup() {
         const route = useRoute()
         const router = useRouter()
         const store = useStore()
         const { uid } = store.state.user
-        const users = ref([])
-        
-        firestore.collection("events").doc(route.params.eventId).collection("users").onSnapshot(snap => {
-            let allUsers = []
-            snap.forEach(user => {
-                allUsers.push({
-                    ...user.data(),
-                    uid: user.id
-                })
-            });
 
-            users.value = allUsers
+        const event = ref()
+        const unsubscribeEvent = firestore
+            .collection("events")
+            .doc(route.params.eventId)
+            .onSnapshot((doc) => {
+                event.value = {
+                    id: doc.id,
+                    ...doc.data(),
+                }
+            })
+
+        const users = ref([])
+        const unsubscribeUsers = firestore
+            .collection("events")
+            .doc(route.params.eventId)
+            .collection("users")
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    const { newIndex, oldIndex, doc, type } = change
+                    if (type === "added") {
+                        users.value.splice(newIndex, 0, {
+                            id: doc.id,
+                            ...doc.data(),
+                        })
+                    } else if (type === "modified") {
+                        users.value.splice(oldIndex, 1)
+                        users.value.splice(newIndex, 0, {
+                            id: doc.id,
+                            ...doc.data(),
+                        })
+                    } else if (type === "removed") {
+                        users.value.splice(oldIndex, 1)
+                    }
+                })
+            })
+
+        onUnmounted(() => {
+            unsubscribeUsers()
+            unsubscribeEvent()
         })
 
         const hasJoined = computed(() => {
-            return users.value.some(x => x.uid === uid)
+            return users.value.some((x) => x.uid === uid)
         })
 
         const uploadText = computed(() => {
@@ -65,28 +78,29 @@ export default {
 
         const goToUpload = () => {
             router.push(UPLOAD)
-        }        
+        }
 
         return {
+            event,
             Button,
             users,
             goToUpload,
-            uploadText
+            uploadText,
         }
-    }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
-    .active {
-        &::before {
-            position: absolute;
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-            content: "\f06b";
-            left: -3.5rem;
-            font-size: 1.5rem;
-            @apply text-yellow-400;
-        }
+.active {
+    &::before {
+        position: absolute;
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f06b";
+        left: -3.5rem;
+        font-size: 1.5rem;
+        @apply text-yellow-400;
     }
+}
 </style>
