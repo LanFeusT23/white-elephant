@@ -6,6 +6,7 @@
                 class="p-2 text-6xl cursor-pointer fa fa-angle-left">
             </i>
 
+
             <Gift big v-bind="currentGift">
                 <div class="flex justify-center mt-4">
                     <Button class="text-xl" v-if="!isAlreadyUsersGift && !currentGift.notAvailable" @click="claimGift">
@@ -25,6 +26,8 @@
                 class="p-2 text-6xl cursor-pointer fa fa-angle-right">
             </i>
         </div>
+        
+            {{ currentGift }}
 
         <div class="absolute cursor-pointer top-4 right-6" @click="closeModal">
             <i class="fa fa-times"></i>

@@ -11,6 +11,8 @@
         No gifts added yet!
     </div>
 
+    <!-- {{ finalGifts.map(x=>x.selectedByName) }} -->
+
     <teleport to="#modal-portal-target" v-if="isOpenModal">
         <GiftsModal 
             @close-modal="closeModal"
@@ -78,6 +80,7 @@ export default {
                 const userSelectedBy = userList.value.find(x => x.id === gift.selectedBy)
 
                 if (userGift) {
+                    console.log(userSelectedBy?.displayName);
                     gift = {
                         ...gift,
                         ...userGift,

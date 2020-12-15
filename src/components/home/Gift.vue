@@ -4,6 +4,9 @@
             <img v-if="isClaimed" :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
         </div>
         
+    {{ isClaimed }}
+    {{ selectedByName ?? "null" }}
+
         <div v-if="isClaimed" class="truncate gift__username whitespace-nowrap">
             {{ selectedByName }}
         </div>
@@ -28,8 +31,8 @@ export default {
         big: Boolean
     },
     setup (props) {
-        const { unwrappedGiftUrl, wrappedGiftUrl, big, selectedByName, stolenCount, notAvailable, selectedBy } = toRefs(props)
-
+        const { unwrappedGiftUrl, wrappedGiftUrl, selectedByName, big, stolenCount, notAvailable, selectedBy } = toRefs(props)
+        
         const isClaimed = computed(() => {
             return selectedBy?.value !== "" && selectedBy?.value != null
         })
