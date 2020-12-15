@@ -143,54 +143,6 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
     response.send("Hello from Firebase!")
 })
 
-exports.giftCreate = functions.firestore.document("events/{eventId}/gifts/{userId}").onCreate(async (doc, context) => {
-    const data = doc.data()
-
-    const eventId = context.params.eventId
-    const userId = context.params.userId
-
-    const eventRef = firestore.collection("events").doc(eventId)
-    const usersQuery = eventRef.collection("users").doc(userId)
-
-    if (data.unwrappedGiftUrl != null && data.unwrappedGiftUrl.trim() !== "") {
-        usersQuery.set(
-            {
-                readyToPlay: true
-            },
-            { merge: true }
-        )
-    }
-})
-
-exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userId}").onUpdate(async (change, context) => {
-    const before = change.before.data()
-    const after = change.after.data()
-
-    const eventId = context.params.eventId
-    const userId = context.params.userId
-
-    const eventRef = firestore.collection("events").doc(eventId)
-    const usersQuery = eventRef.collection("users").doc(userId)
-
-    if (before.unwrappedGiftUrl !== after.unwrappedGiftUrl) {
-        if (after.unwrappedGiftUrl != null && after.unwrappedGiftUrl.trim() !== "") {
-            usersQuery.set(
-                {
-                    readyToPlay: true
-                },
-                { merge: true }
-            )
-        } else {
-            usersQuery.set(
-                {
-                    readyToPlay: false
-                },
-                { merge: true }
-            )
-        }
-    }
-})
-
 async function initializeGame(eventId) {
     const eventRef = firestore.collection("events").doc(eventId)
 
@@ -224,7 +176,23 @@ exports.eventUpdated = functions.firestore.document("events/{eventId}").onUpdate
 
     const eventId = context.params.eventId
 
-    if (before.started !== after.started) {
+    if (before.started !== after.started && after.started === true) {
         initializeGame(eventId)
+    }
+})
+
+exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userId}").onUpdate(async (change, context) => {
+    const before = change.before.data()
+    const after = change.after.data()
+
+    const eventId = context.params.eventId
+    const userId = context.params.userId
+
+    const eventRef = firestore.collection("events").doc(eventId)
+    const usersQuery = eventRef.collection("users").doc(userId)
+
+    //SELECTED BY CHANGES (PLAYER CHOSES A GIFT)
+    if (before.selectedBy !== after.selectedBy && before.selectedBy != null) {
+        //set next player
     }
 })
