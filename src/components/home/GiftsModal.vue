@@ -1,29 +1,36 @@
 <template>
     <Modal>
         <div class="flex items-center justify-between h-full">
-            <i :class="{ 'opacity-25': currentIndex === 0 }" 
+            <i :class="{ 'opacity-25': selectedGiftIndex === 0 }" 
                 @click="previousGift" 
                 class="p-2 text-6xl cursor-pointer fa fa-angle-left">
             </i>
-
-
+            
             <Gift big v-bind="currentGift">
-                <div class="flex justify-center mt-4">
-                    <Button class="text-xl" v-if="canBeClaimed" @click="claimGift">
-                        Claim this gift
-                    </Button>
-
-                    <div class="text-xl text-yellow-300" secondary v-if="currentGift.notAvailable">
-                        This gift is no longer available :(
+                <template #header>
+                    <div class="mb-2 text-2xl">
+                        {{ currentGift.description }}
                     </div>
+                </template>
 
-                    <div class="text-xl" v-if="isAlreadyUsersGift">
-                        You claimed this gift!
+                <template #footer>
+                    <div class="flex justify-center mt-4">
+                        <Button class="text-xl" v-if="canBeClaimed" @click="claimGift">
+                            Claim this gift
+                        </Button>
+
+                        <div class="text-xl text-yellow-300" secondary v-if="currentGift.notAvailable">
+                            This gift is no longer available :(
+                        </div>
+
+                        <div class="text-xl" v-if="isAlreadyUsersGift">
+                            You claimed this gift!
+                        </div>
                     </div>
-                </div>
+                </template>
             </Gift>
 
-            <i :class="{ 'opacity-25': currentIndex === gifts.length - 1 }" 
+            <i :class="{ 'opacity-25': selectedGiftIndex === gifts.length - 1 }" 
                 @click="nextGift" 
                 class="p-2 text-6xl cursor-pointer fa fa-angle-right">
             </i>
@@ -39,7 +46,7 @@
 import Gift from "@/components/home/Gift"
 import Modal from "@/components/shared/Modal"
 import Button from "@/components/shared/Button"
-import { computed, ref, toRefs } from 'vue'
+import { computed, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { firestore } from '@/firebase'
 import { useRoute } from 'vue-router'
@@ -48,18 +55,18 @@ export default {
         gifts: Array,
         selectedGiftIndex: Number
     },
-    emits: ["close-modal"],
+    emits: ["close-modal", "update:selectedGiftIndex"],
     setup (props, { emit }) {
         const route = useRoute()
         const store = useStore()
         const { gifts, selectedGiftIndex } = toRefs(props)
-        const currentIndex = ref(selectedGiftIndex.value)
 
         const currentGift = computed(() => {
-            return gifts.value[currentIndex.value]
+            return gifts.value[selectedGiftIndex.value]
         })
 
         const isAlreadyUsersGift = computed(() => {
+            console.log("selectedBy", currentGift.value);
             return currentGift.value.selectedBy === store.state.user.uid
         })
 
@@ -68,14 +75,16 @@ export default {
         }
 
         const previousGift = () => {
-            if (currentIndex.value > 0) {
-                currentIndex.value = currentIndex.value - 1
+            if (selectedGiftIndex.value > 0) {
+                emit("update:selectedGiftIndex", selectedGiftIndex.value - 1)
+                // selectedGiftIndex.value = selectedGiftIndex.value - 1
             }
         }
 
         const nextGift = () => {
-            if (currentIndex.value < gifts.value.length) {
-                currentIndex.value = currentIndex.value + 1
+            if (selectedGiftIndex.value < gifts.value.length) {
+                emit("update:selectedGiftIndex", selectedGiftIndex.value + 1)
+                // selectedGiftIndex.value = selectedGiftIndex.value + 1
             }
         }
 
@@ -89,8 +98,12 @@ export default {
         }
 
         const canBeClaimed = computed(() => {
-            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && store.state.event.currentUser === store.state.user.uid
+            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && store.getters.isLoggedInUsersTurn
         })
+
+        watch(currentGift, () => {
+            console.log(currentGift.value);
+        }, { immediate: true })
 
         return {
             Modal,
@@ -104,7 +117,7 @@ export default {
             gifts,
             currentGift,
             canBeClaimed,
-            currentIndex
+            selectedGiftIndex
         }
     }
 }

@@ -9,7 +9,7 @@
                     </span>
                 </div>
 
-                <div class="flex gap-4 text-4xl text-yellow-400">
+                <div v-if="isLoggedInUsersTurn" class="flex gap-4 text-4xl text-yellow-400">
                     <i class="fa fa-gift" />Your turn to pick a gift<i class="fa fa-gift" />
                 </div>
 
@@ -66,11 +66,16 @@ export default {
                 started: true
             })
         }
+        
+        const isLoggedInUsersTurn = computed(() => {
+            return store.state.isLoggedInUsersTurn
+        })
 
         return {
             Button,
             isAdminUser,
             event,
+            isLoggedInUsersTurn,
             startEvent
         }
     }

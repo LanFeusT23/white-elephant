@@ -8,3 +8,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 body {
     background: url("./images/xmas-tree.png") bottom right no-repeat;
 }
+
+.filter-shadow {
+    filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));
+}

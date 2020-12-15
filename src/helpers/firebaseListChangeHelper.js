@@ -1,5 +1,3 @@
-import { toRef } from "vue"
-
 export default function firebaseListChangeHelper(change, listRef) {
     const { newIndex, oldIndex, doc, type } = change
 

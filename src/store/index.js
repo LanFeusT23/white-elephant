@@ -9,6 +9,11 @@ export default createStore({
         setUser: (state, user) => (state.user = user),
         setEvent: (state, event) => (state.event = event)
     },
+    getters: {
+        isLoggedInUsersTurn: state => {
+            return state.event != null && state.event.currentUser === state.user?.uid
+        }
+    },
     actions: {},
     modules: {}
 })
