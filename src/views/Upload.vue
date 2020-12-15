@@ -68,7 +68,6 @@ export default {
                     stolenCount: 0,
                     unwrappedGiftUrl: formData.unwrappedImageUrl,
                     description: formData.giftDescription,
-                    revealed: false,
                 },
                 { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
             )

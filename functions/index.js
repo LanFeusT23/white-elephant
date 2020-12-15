@@ -200,24 +200,38 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userI
                 selectedGift: true
             })
 
-        //gets the next player
-        const snap = await eventRef
-            .collection("users")
-            .where("selectedGift", "==", false)
-            .orderBy("order")
-            .limit(1)
-            .get()
+        if (before.selectedBy != null) {
+            //A STEAL TOOK PLACE
+            await eventRef
+                .collection("gifts")
+                .doc(userId)
+                .update({
+                    stolenCount: admin.firestore.FieldValue.increment(1)
+                })
 
-        if (!snap.empty) {
-            const user = snap.docs[0]
-
-            //set the next player on the event
-            eventRef.update({
-                currentPlayer: user.id
+            await eventRef.update({
+                currentPlayer: before.selectedBy
             })
         } else {
-            //ENABLE BONUS ROUND OF DEATH
-            console.log("NO MORE")
+            //gets the next player
+            const snap = await eventRef
+                .collection("users")
+                .where("selectedGift", "==", false)
+                .orderBy("order")
+                .limit(1)
+                .get()
+
+            if (!snap.empty) {
+                const user = snap.docs[0]
+
+                //set the next player on the event
+                eventRef.update({
+                    currentPlayer: user.id
+                })
+            } else {
+                //ENABLE BONUS ROUND OF DEATH
+                console.log("NO MORE")
+            }
         }
     }
 })
