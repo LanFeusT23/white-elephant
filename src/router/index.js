@@ -15,6 +15,10 @@ export const EVENT = {
     name: "Event"
 }
 
+export const EVENTSLANDING = {
+    name: "EventsLanding"
+}
+
 export const EVENTCREATE = {
     name: "EventCreate"
 }
@@ -39,8 +43,16 @@ const routes = [
     },
     {
         ...EVENTCREATE,
-        path: "/create-event",
+        path: "/events/create",
         component: () => import(/* webpackChunkName: "eventCreate" */ "../views/EventCreate.vue"),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        ...EVENTSLANDING,
+        path: "/events",
+        component: () => import(/* webpackChunkName: "eventLanding" */ "../views/EventLanding.vue"),
         meta: {
             requiresAuth: true
         }

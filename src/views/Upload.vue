@@ -1,17 +1,15 @@
 <template>
     <div class="text-lg">
-        <div class="text-4xl text-yellow-300">
-            Upload your gift image!
-        </div>
+        <div class="text-4xl text-yellow-300">Upload your gift image!</div>
 
         <div class="mt-2">
             <div class="text-base">Unwrapped image url (required)</div>
-            <input v-model="unwrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text">
+            <input v-model="unwrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text" />
         </div>
 
         <div>
             <div class="text-base">Wrapped image url</div>
-            <input v-model="wrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text">
+            <input v-model="wrappedImageUrl" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none w-96" type="text" />
         </div>
 
         <div class="mt-2">
@@ -25,11 +23,11 @@
 
 <script>
 import Button from "@/components/shared/Button"
-import { computed, reactive, ref, toRefs } from 'vue'
-import { useStore } from 'vuex'
-import { useRoute, useRouter } from 'vue-router'
-import { HOME } from '@/router'
-import { firestore } from '@/firebase'
+import { computed, reactive, ref, toRefs } from "vue"
+import { useStore } from "vuex"
+import { useRoute, useRouter } from "vue-router"
+import { HOME } from "@/router"
+import { firestore } from "@/firebase"
 export default {
     setup() {
         const route = useRoute()
@@ -37,67 +35,65 @@ export default {
         const store = useStore()
         const { uid, displayName } = store.state.user
 
-        const gifts = firestore
-            .collection("events").doc(route.params.eventId)
-            .collection("gifts")
+        const eventId = route.params.eventId
+        const eventRef = firestore.collection("events").doc(eventId)
+        const giftsRef = eventRef.collection("gifts")
+        const usersRef = eventRef.collection("users")
 
-        const users = firestore
-            .collection("events").doc(route.params.eventId)
-            .collection("users")
-
-        const gift = ref("")
-        const user = ref("")
-
-        const giftData = reactive({
+        const formData = reactive({
             wrappedImageUrl: "",
             unwrappedImageUrl: "",
-            giftDescription: ""
+            giftDescription: "",
         })
 
         const load = async () => {
-            gift.value = (await gifts.doc(uid).get()).data()
-            user.value = (await users.doc(uid).get()).data()
-            
-            giftData.unwrappedImageUrl = gift.value.unwrappedGiftUrl
-            giftData.giftDescription = gift.value.description
-            
-            giftData.wrappedImageUrl = user.value.wrappedGiftUrl
+            const giftDoc = await giftsRef.doc(uid).get()
+            const giftData = giftDoc.data()
+            formData.unwrappedImageUrl = giftData?.unwrappedGiftUrl ?? ""
+            formData.giftDescription = giftData?.description ?? ""
+
+            const userDoc = await usersRef.doc(uid).get()
+            const userData = userDoc.data()
+            formData.wrappedImageUrl = userData?.wrappedGiftUrl ?? ""
         }
 
         load()
 
-        const disableButton = computed(() => giftData.unwrappedImageUrl === "")
+        const disableButton = computed(() => formData.unwrappedImageUrl === "")
 
         const upload = async () => {
+            const newGift = await giftsRef.doc(uid).set(
+                {
+                    description: formData.giftDescription,
+                    unwrappedGiftUrl: formData.unwrappedImageUrl,
+                },
+                { merge: true }
+            )
 
-            const newGift = await gifts.doc(uid)
-                .set({
-                    description: giftData.giftDescription,
-                    unwrappedGiftUrl: giftData.unwrappedImageUrl
-            }, { merge: true })
-
-            const newUser = await users.doc(uid)
-                .set({
-                    wrappedGiftUrl: giftData.wrappedImageUrl,
-                    displayName: displayName
-            }, { merge: true })
+            const newUser = await usersRef.doc(uid).set(
+                {
+                    wrappedGiftUrl: formData.wrappedImageUrl,
+                    displayName: displayName,
+                },
+                { merge: true }
+            )
 
             router.push(HOME)
         }
 
         return {
-            ...toRefs(giftData),
+            ...toRefs(formData),
             disableButton,
             upload,
-            Button
+            Button,
         }
-    }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
-    .upload {
-        input {
-        }
+.upload {
+    input {
     }
+}
 </style>
