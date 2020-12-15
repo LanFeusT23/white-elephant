@@ -46,7 +46,7 @@ export default {
         })
 
         const isAdminUser = computed(() => {
-            return store.user != undefined && store.user.uid === event.value?.createdBy
+            return store.state.user != undefined && store.state.user.uid === event.value?.createdBy
         })
 
         let unsubscribeEvent
