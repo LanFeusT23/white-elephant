@@ -1,10 +1,10 @@
 <template>
-    <div class="flex-1 gifts-list">
+    <div v-if="finalGifts.length !== 0" class="flex-1 gifts-list">
         <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift"></Gift>
+    </div>
 
-        <div v-if="finalGifts.length === 0" class="flex items-center justify-center w-full h-full text-4xl text-yellow-300" >
-            No gifts added yet!
-        </div>
+    <div v-else class="flex items-center justify-center flex-1 h-full text-4xl text-yellow-300" >
+        No gifts added yet!
     </div>
 
     <teleport to="#modal-portal-target" v-if="isOpenModal">
