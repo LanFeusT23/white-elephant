@@ -1,7 +1,9 @@
 <template>
     <div class="p-8 pt-5 w-72 bg-red-1000 rounded-xl">
-        <div v-if="!hasJoined" class="flex justify-center mb-4" @click="goToUpload">
-            <Button>JOIN!</Button>
+        <div class="flex justify-center mb-4">
+            <Button @click="goToUpload">
+                {{ uploadText }}
+            </Button>
         </div>
 
         <ol class="pl-10 list-decimal">
@@ -57,15 +59,19 @@ export default {
             return users.value.some(x => x.uid === uid)
         })
 
+        const uploadText = computed(() => {
+            return hasJoined ? "Edit Gift" : "Join Event"
+        })
+
         const goToUpload = () => {
             router.push(UPLOAD)
-        }
+        }        
 
         return {
             Button,
             users,
             goToUpload,
-            hasJoined
+            uploadText
         }
     }
 }

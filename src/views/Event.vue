@@ -1,5 +1,5 @@
 <template>
-    <router-view class="container"></router-view>
+    <router-view class="container mx-auto mt-24"></router-view>
 </template>
 
 <script>

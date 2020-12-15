@@ -17,7 +17,10 @@ module.exports = {
         }
     },
     variants: {
-        extend: {}
+        extend: {
+            backgroundColor: ["active"],
+            opacity: ["disabled"]
+        }
     },
     plugins: []
 }
