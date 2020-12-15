@@ -2,42 +2,19 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow read, write: if false;
-
-      match /events/{eventId}{
-        allow read: if isAuthenticated();
-        allow create: if validateEvent(); 
-        allow update: if validateEvent();
-      }
-
-      match /users/{userId}{
-        allow read: if isAuthenticated();
-        allow write: if request.auth.uid == userId
-      }
-
-      match /gifts/{userId}{
-        allow read: if isAuthenticated();
-        allow write: if request.auth.uid == userId
-      }
-
+      allow read, write: if true;
     }
-  }
 
-  function isAuthenticated(){
-    return request.auth != null;
-  }
+    //ANYONE CAN CREATE EVENT
+    //OWNERS CAN UPDATE EVENTS
 
-  function isMine(d){
-    return request.auth.uid == d.createdBy;
-  }
+    //ANYONE CAN CREATE A USER
+    //OWNERS CAN UPDATE A USER
 
-  function validateEvent(){
-    return isMine(request.resource.data) &&
-            isEventNameValid()
-  }
 
-  function isEventNameValid(){
-    return request.resource.data.name.size() < 100
+    //ANYONE CAN CREATE GIFT
+    //OWNERS CAN UPDATE GIFTS
+    
+    //NEXT PLAYER (TRACKED ON EVENT) CAN UPDATE 'selectedBy' field
   }
-
 }

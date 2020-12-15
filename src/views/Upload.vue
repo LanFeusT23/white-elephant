@@ -67,18 +67,24 @@ export default {
         const upload = async () => {
             const newGift = await giftsRef.doc(uid).set(
                 {
-                    description: formData.giftDescription,
+                    selectedBy: null,
+                    stolenCount: 0,
                     unwrappedGiftUrl: formData.unwrappedImageUrl,
+                    description: formData.giftDescription,
+                    revealed: false,
                 },
-                { merge: true }
+                { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
             )
 
             const newUser = await usersRef.doc(uid).set(
                 {
                     wrappedGiftUrl: formData.wrappedImageUrl,
                     displayName: displayName,
+                    readyToPlay: true,
+                    order: null,
+                    selectedGift: false,
                 },
-                { merge: true }
+                { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
             )
 
             router.push(HOME)
