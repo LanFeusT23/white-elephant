@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center justify-between h-24 gap-8 px-8 shadow-xl bg-red-1000">
+    <div class="flex items-center justify-between h-24 gap-8 px-8 shadow-xl bg-opacity-90 bg-red-1000">
         <img src="../../assets/images/logo.png" alt="Logo">
         
         <div id="navigation-portal-target" class="flex-1 h-full"></div>

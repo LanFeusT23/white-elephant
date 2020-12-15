@@ -8,6 +8,6 @@
     @font-face {
         font-family: "Nerko One";
         font-weight: 400;
-        src: url("./fonts/NerkoOne-Regular.ttf") format("ttf");
+        src: url("./fonts/NerkoOne-Regular.ttf") format("truetype");
     }
 }
