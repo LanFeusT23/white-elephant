@@ -107,7 +107,7 @@ export default {
             }
 
             let wrappedImageUrl = formData.wrappedImageUrl
-            if (wrappedFile != null) {
+            if (wrappedFile.value != null) {
                 const wrappedExtension = getExtension(wrappedFile.value)
                 const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
                 wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
