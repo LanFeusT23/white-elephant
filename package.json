@@ -7,7 +7,7 @@
         "build": "vue-cli-service build",
         "test": "vue-cli-service test:unit",
         "test-watch": "vue-cli-service test:unit --watch",
-        "emulators": "firebase emulators:start",
+        "emulators": "firebase emulators:start --inspect-functions",
         "serveProd": "vue-cli-service serve"
     },
     "dependencies": {
