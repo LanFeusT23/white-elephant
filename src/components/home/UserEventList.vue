@@ -7,7 +7,9 @@
         </div>
 
         <ol class="pl-10" :class="{ 'list-decimal': event?.started }">
-            <li v-for="user in users" :key="user.id" class="relative text-xl" :class="{ 'active': event?.currentPlayer === user.id }">
+            <li v-for="user in users" :key="user.id" 
+            class="relative text-xl" 
+            :class="{ 'active': event?.currentPlayer === user.id, 'opacity-50': user.selectedGift && event?.currentPlayer !== user.id }">
                 {{ user.displayName }}
             </li>
         </ol>
@@ -16,12 +18,13 @@
 
 <script>
 import Button from "@/components/shared/Button"
-import { computed, ref, onUnmounted } from "vue"
+import { computed, ref, onUnmounted, watch } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { firestore } from "@/firebase"
 import { UPLOAD } from "@/router"
 import orderBy from 'lodash/orderBy'
+import firebaseListChangeHelper from '@/helpers/firebaseListChangeHelper'
 
 export default {
     setup() {
@@ -48,21 +51,7 @@ export default {
             .collection("users")
             .onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
-                    const { newIndex, oldIndex, doc, type } = change
-                    if (type === "added") {
-                        users.value.splice(newIndex, 0, {
-                            id: doc.id,
-                            ...doc.data(),
-                        })
-                    } else if (type === "modified") {
-                        users.value.splice(oldIndex, 1)
-                        users.value.splice(newIndex, 0, {
-                            id: doc.id,
-                            ...doc.data(),
-                        })
-                    } else if (type === "removed") {
-                        users.value.splice(oldIndex, 1)
-                    }
+                    firebaseListChangeHelper(change, users)
                 })
             })
 
