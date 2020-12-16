@@ -61,10 +61,13 @@ export default {
         })
 
         const finalGifts = computed(() => {
-            const giftCards = userList.value.map((gift) => {
+            const gl = giftsList.value
+            const ul = userList.value
+
+            const giftCards = ul.map((gift) => {
                 // users and gifts share the same id from the user's uid
-                const unwrappedGift = giftsList.value.find((x) => x.selectedBy === gift.id)
-                const selectedByUser = userList.value.find((x) => x.id === unwrappedGift?.selectedBy)
+                const unwrappedGift = gl.find((x) => x.selectedBy === gift.id)
+                const selectedByUser = ul.find((x) => x.id === unwrappedGift?.selectedBy)
 
                 gift = {
                     ...gift,
