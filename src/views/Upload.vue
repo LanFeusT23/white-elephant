@@ -115,6 +115,7 @@ export default {
 
             const newGift = await giftsRef.doc(uid).set(
                 {
+                    revealed: false,
                     selectedBy: null,
                     stolenCount: 0,
                     unwrappedGiftUrl: unwrappedImageUrl,

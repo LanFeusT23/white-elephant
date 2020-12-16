@@ -44,7 +44,7 @@ export default {
     props: {
         selectedGift: Object
     },
-    emits: ["close-modal", "update:selectedGiftIndex"],
+    emits: ["close-modal"],
     setup (props, { emit }) {
         const route = useRoute()
         const store = useStore()
@@ -58,13 +58,14 @@ export default {
             emit("close-modal")
         }
 
-        const claimGift = () => {
-            firestore
+        const claimGift = async () => {
+            let giftDoc = firestore
                 .collection("events").doc(route.params.eventId) 
                 .collection("gifts").doc(selectedGift.value.id)
-                .update({
-                    selectedBy: store.state.user.uid
-                })
+                    .update({
+                        selectedBy: store.state.user.uid,
+                        revealed: true
+                    })
         }
 
         const isLoggedInUsersTurn = computed(() => {

@@ -25,7 +25,7 @@ service cloud.firestore {
       function isAllowedToReadGift(giftId){
             let uid = request.auth.uid;
 
-            return resource.data.selectedBy != null || (uid == giftId && getEvent().started == false); 
+            return resource.data.selectedBy != null || resource.data.revealed == true || (uid == giftId && getEvent().started == false); 
       }
 
       function isAllowedToUpdateGift(giftId){

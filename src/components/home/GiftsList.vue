@@ -28,38 +28,42 @@ import { useStore } from "vuex"
 import orderBy from "lodash/orderBy"
 
 export default {
+    name: "GiftsList",
     setup() {
         const route = useRoute()
         const store = useStore()
-        const selectedGift = ref()
+        const selectedGiftId = ref()
+        const selectedGift = computed(() => {
+            return finalGifts.value.find(x => x.id === selectedGiftId.value)
+        })
 
         const openModal = (giftId) => {
-            selectedGift.value = finalGifts.value.find(x => x.id === giftId)
+            selectedGiftId.value = giftId
         }
 
         const closeModal = () => {
-            selectedGift.value = undefined
+            selectedGiftId.value = undefined
         }
 
         const isOpenModal = computed(() => {
-            return selectedGift.value != null
+            return selectedGiftId.value != null
         })
 
         const eventRef = firestore.collection("events").doc(route.params.eventId)
         const giftsRef = eventRef.collection("gifts")
         const usersRef = eventRef.collection("users")
 
-        const giftsList = ref([])
-        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null).onSnapshot((snapshot) => {
+        const unWrappedGiftsList = ref([])
+        const unsubscribeGifts = giftsRef.where("revealed", "==", true).onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
-                firebaseListChangeHelper(change, giftsList)
+                firebaseListChangeHelper(change, unWrappedGiftsList)
             })
         })
 
-        const userList = ref([])
+        const wrappedGiftsList = ref([])
         const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
-                firebaseListChangeHelper(change, userList)
+                firebaseListChangeHelper(change, wrappedGiftsList)
             })
         })
 
@@ -68,36 +72,36 @@ export default {
         })
 
         const finalGifts = computed(() => {
-            const gl = giftsList.value
-            const ul = userList.value
+            const unWrappedGifts = unWrappedGiftsList.value
+            const wrappedGifts = wrappedGiftsList.value
 
-            const giftCards = ul.map((gift) => {
+            const giftCards = wrappedGifts.map((wrappedGift) => {
                 // users and gifts share the same id from the user's uid
-                const unwrappedGift = gl.find((x) => x.selectedBy === gift.id)
-                const selectedByUser = ul.find((x) => x.id === unwrappedGift?.selectedBy)
+                const unwrappedGift = unWrappedGifts.find((x) => x.selectedBy === wrappedGift.id)
+                const selectedByUser = wrappedGifts.find((x) => x.id === unwrappedGift?.selectedBy)
 
-                gift = {
-                    ...gift,
+                let newGift = {
+                    ...wrappedGift,
                     selectedByName: "Not Selected",
                     notAvailable: false,
-                    giftUrl: gift?.wrappedGiftUrl,
+                    giftUrl: wrappedGift?.wrappedGiftUrl,
                     selectedBy: undefined,
                     isClaimed: false,
                 }
 
                 if (unwrappedGift) {
-                    gift = {
+                    newGift = {
                         ...unwrappedGift,
-                        ...gift,
+                        ...wrappedGift,
                         selectedBy: unwrappedGift.selectedBy,
                         giftUrl: unwrappedGift.unwrappedGiftUrl,
                         selectedByName: selectedByUser?.displayName,
-                        notAvailable: event.maxSteals <= gift.stolenCount,
+                        notAvailable: event.maxSteals <= wrappedGift.stolenCount,
                         isClaimed: true,
                     }
                 }
 
-                return gift
+                return newGift
             })
 
             return orderBy(giftCards, "id", "desc")

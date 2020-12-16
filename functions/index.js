@@ -52,12 +52,12 @@ exports.eventUpdated = functions.firestore.document("events/{eventId}").onUpdate
     }
 })
 
-exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userId}").onUpdate(async (change, context) => {
+exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftId}").onUpdate(async (change, context) => {
     const before = change.before.data()
     const after = change.after.data()
 
     const eventId = context.params.eventId
-    const userId = context.params.userId
+    const giftId = context.params.giftId
 
     const eventRef = firestore.collection("events").doc(eventId)
 
@@ -73,12 +73,20 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{userI
 
         if (before.selectedBy != null) {
             //A STEAL TOOK PLACE
-            await eventRef
-                .collection("gifts")
-                .doc(userId)
-                .update({
-                    stolenCount: admin.firestore.FieldValue.increment(1)
-                })
+            const giftsRef = eventRef.collection("gifts")
+
+            await giftsRef.doc(giftId).update({
+                stolenCount: admin.firestore.FieldValue.increment(1)
+            })
+
+            // const currentUserPreviouslySelectedGift = await giftsRef.where("selectedBy", "==", after.selectedBy).get()
+            // currentUserPreviouslySelectedGift.forEach(element => {
+            //     if (element.exists) {
+            //         giftsRef.doc(element.id).update({
+            //             selectedBy: null
+            //         })
+            //     }
+            // })
 
             await eventRef.update({
                 currentPlayer: before.selectedBy
