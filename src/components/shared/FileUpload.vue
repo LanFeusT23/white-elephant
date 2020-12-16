@@ -32,15 +32,6 @@ export default {
         const fileEl = ref(null)
         const store = useStore()
 
-        const event = computed(() => {
-            return store.state.event
-        })
-
-        const user = computed(() => {
-            return store.state.user
-        })
-
-        const imagePreview = ref(null)
         const dragging = ref(false)
 
         const addFile = (e) => {
