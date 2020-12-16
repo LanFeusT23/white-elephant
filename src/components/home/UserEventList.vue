@@ -59,10 +59,6 @@ export default {
             return orderBy(users.value, "order")
         })
 
-        watch(orderedUsers, (newV, oldV) => {
-            console.log(newV);
-        })
-
         onUnmounted(() => {
             unsubscribeUsers()
             unsubscribeEvent()
