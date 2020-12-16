@@ -43,15 +43,14 @@ export default {
         const usersRef = eventRef.collection("users")
 
         const giftsList = ref([])
-        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null)
-            .onSnapshot((snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    firebaseListChangeHelper(change, giftsList)
-                })
+        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null).onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                firebaseListChangeHelper(change, giftsList)
+            })
         })
 
         const userList = ref([])
-        const unsubscribeUsers = usersRef.onSnapshot((snapshot) => {
+        const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 firebaseListChangeHelper(change, userList)
             })
@@ -73,11 +72,10 @@ export default {
                     notAvailable: false,
                     giftUrl: gift?.wrappedGiftUrl,
                     selectedBy: undefined,
-                    isClaimed: false
+                    isClaimed: false,
                 }
 
                 if (unwrappedGift) {
-
                     gift = {
                         ...unwrappedGift,
                         ...gift,
@@ -85,13 +83,12 @@ export default {
                         giftUrl: unwrappedGift.unwrappedGiftUrl,
                         selectedByName: selectedByUser?.displayName,
                         notAvailable: event.maxSteals <= gift.stolenCount,
-                        isClaimed: true
+                        isClaimed: true,
                     }
                 }
 
                 return gift
             })
-
 
             return orderBy(giftCards, "id", "desc")
         })
