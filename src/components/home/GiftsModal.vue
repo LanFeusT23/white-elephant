@@ -11,10 +11,10 @@
                 <template #footer>
                     <div class="flex justify-center mt-4">
                         <Button class="text-xl" v-if="canBeClaimed" @click="claimGift">
-                            Claim this gift
+                            {{ claimText }}
                         </Button>
 
-                        <div class="text-xl text-yellow-300" secondary v-if="selectedGift.notAvailable">
+                        <div class="text-xl text-yellow-300" secondary v-if="selectedGift.notAvailable && !isAlreadyUsersGift">
                             This gift is no longer available :(
                         </div>
 
@@ -73,7 +73,7 @@ export default {
                 }
             });
 
-            let giftDoc = firestore
+            let giftDoc = await firestore
                 .collection("events").doc(route.params.eventId) 
                 .collection("gifts").doc(selectedGift.value.id)
                     .update({
@@ -81,6 +81,8 @@ export default {
                         selectedBy: store.state.user.uid,
                         revealed: true
                     })
+                
+            closeModal()
         }
 
         const isLoggedInUsersTurn = computed(() => {
@@ -89,6 +91,10 @@ export default {
 
         const canBeClaimed = computed(() => {
             return !isAlreadyUsersGift.value && !selectedGift.value.notAvailable && isLoggedInUsersTurn.value
+        })
+
+        const claimText = computed(() => {
+            return selectedGift.value.selectedBy == null ? "Claim this gift" : "Steal this gift"
         })
 
         return {
@@ -100,7 +106,8 @@ export default {
             closeModal,
             claimGift,
             selectedGift,
-            canBeClaimed
+            canBeClaimed,
+            claimText
         }
     }
 }
