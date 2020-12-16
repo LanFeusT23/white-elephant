@@ -4,12 +4,14 @@
 
         <div class="mt-2">
             <div class="text-lg">Unwrapped image url (required)</div>
-            <FileUpload v-model="unWrappedFile" :id="'unwrappedFile'"></FileUpload>
+            <FileUpload v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
+            <img :src="unwrappedImagePreview" />
         </div>
 
         <div class="mt-2">
             <div class="text-lg">Wrapped image url (required)</div>
-            <FileUpload v-model="wrappedFile" :id="'wrappedFile'"></FileUpload>
+            <FileUpload v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
+            <img :src="wrappedImagePreview" />
         </div>
 
         <div class="mt-2">
@@ -35,6 +37,10 @@ import { firestore, storage } from "@/firebase"
 
 const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
 
+function getExtension(file) {
+    return file.type.split("/").pop()
+}
+
 export default {
     setup() {
         const route = useRoute()
@@ -48,32 +54,70 @@ export default {
         const usersRef = eventRef.collection("users")
 
         const formData = reactive({
-            wrappedImageUrl: "",
-            unwrappedImageUrl: "",
             giftDescription: "",
+            unwrappedImageUrl: "",
+            wrappedImageUrl: "",
         })
+
+        const unWrappedFile = ref()
+        const wrappedFile = ref()
 
         const load = async () => {
             const giftDoc = await giftsRef.doc(uid).get()
             const giftData = giftDoc.data()
-            formData.unwrappedImageUrl = giftData?.unwrappedGiftUrl ?? ""
             formData.giftDescription = giftData?.description ?? ""
+
+            formData.unwrappedImageUrl = giftData?.unwrappedGiftUrl
 
             const userDoc = await usersRef.doc(uid).get()
             const userData = userDoc.data()
-            formData.wrappedImageUrl = userData?.wrappedGiftUrl ?? ""
+
+            formData.wrappedImageUrl = userData?.wrappedGiftUrl
         }
 
         load()
 
-        const disableButton = computed(() => formData.unwrappedImageUrl === "")
+        const unwrappedImagePreview = computed(() => {
+            if (unWrappedFile.value != null) {
+                return URL.createObjectURL(unWrappedFile.value)
+            }
+
+            return formData.unwrappedImageUrl
+        })
+
+        const wrappedImagePreview = computed(() => {
+            if (wrappedFile.value != null) {
+                return URL.createObjectURL(wrappedFile.value)
+            }
+
+            return formData.wrappedImageUrl
+        })
+
+        const disableButton = computed(() => {
+            return wrappedImagePreview.value == null || unwrappedImagePreview.value == null
+        })
 
         const upload = async () => {
+            let unwrappedImageUrl = formData.unwrappedImageUrl
+
+            if (unWrappedFile.value != null) {
+                const unwrappedExtension = getExtension(unWrappedFile.value)
+                const unwrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/unwrapped.${unwrappedExtension}`).put(unWrappedFile.value)
+                unwrappedImageUrl = await unwrappedFileRef.ref.getDownloadURL()
+            }
+
+            let wrappedImageUrl = formData.wrappedImageUrl
+            if (wrappedFile != null) {
+                const wrappedExtension = getExtension(wrappedFile.value)
+                const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
+                wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
+            }
+
             const newGift = await giftsRef.doc(uid).set(
                 {
                     selectedBy: null,
                     stolenCount: 0,
-                    unwrappedGiftUrl: formData.unwrappedImageUrl,
+                    unwrappedGiftUrl: unwrappedImageUrl,
                     description: formData.giftDescription,
                 },
                 { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
@@ -81,7 +125,7 @@ export default {
 
             const newUser = await usersRef.doc(uid).set(
                 {
-                    wrappedGiftUrl: formData.wrappedImageUrl,
+                    wrappedGiftUrl: wrappedImageUrl,
                     displayName: displayName,
                     readyToPlay: true,
                     order: null,
@@ -97,9 +141,6 @@ export default {
             router.push(HOME)
         }
 
-        const unWrappedFile = ref()
-        const wrappedFile = ref()
-        
         return {
             Button,
             FileUpload,
@@ -108,7 +149,9 @@ export default {
             upload,
             goToEvent,
             wrappedFile,
-            unWrappedFile
+            unWrappedFile,
+            wrappedImagePreview,
+            unwrappedImagePreview,
         }
     },
 }

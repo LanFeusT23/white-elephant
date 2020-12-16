@@ -5,15 +5,15 @@
         <img class="object-scale-down h-96" src="@/assets/images/white-elephant.png" alt="Logo" />
 
         <router-link class="text-3xl hover:text-yellow-300" :to="EVENTSLANDING">See Upcoming Events</router-link>
-    </div>
 
-    <teleport to="#navigation-portal-target">
-        <div class="flex items-center justify-between w-full h-full">
-            <div class="flex items-center gap-4">
-                <span class="text-5xl"> NAME OF THE WEBSITE </span>
+        <teleport to="#navigation-portal-target">
+            <div class="flex items-center justify-between w-full h-full">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl"> NAME OF THE WEBSITE </span>
+                </div>
             </div>
-        </div>
-    </teleport>
+        </teleport>
+    </div>
 </template>
 
 <script>
