@@ -2,6 +2,10 @@
     <div class="flex flex-col items-center justify-center gap-4 p-8 w-96 bg-red-1000 bg-opacity-90 rounded-xl">
         
         <template v-if="claimedGift">
+            <div class="self-start text-2xl">
+                {{ claimedGift.description }}
+            </div>
+
             <img class="object-cover w-full rounded-xl filter-shadow" :src="claimedGift.unwrappedGiftUrl" :alt="claimedGift.description" :title="claimedGift.description">
             
             <div class="text-4xl">
