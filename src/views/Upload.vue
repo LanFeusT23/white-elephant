@@ -94,17 +94,24 @@ export default {
         })
 
         const disableButton = computed(() => {
-            return unWrappedFile.value == null || wrappedFile.value == null
+            return wrappedImagePreview.value == null || unwrappedImagePreview.value == null
         })
 
         const upload = async () => {
-            const unwrappedExtension = getExtension(unWrappedFile.value)
-            const unwrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/unwrapped.${unwrappedExtension}`).put(unWrappedFile.value)
-            const unwrappedImageUrl = await unwrappedFileRef.ref.getDownloadURL()
+            let unwrappedImageUrl = formData.unwrappedImageUrl
 
-            const wrappedExtension = getExtension(wrappedFile.value)
-            const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
-            const wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
+            if (unWrappedFile.value != null) {
+                const unwrappedExtension = getExtension(unWrappedFile.value)
+                const unwrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/unwrapped.${unwrappedExtension}`).put(unWrappedFile.value)
+                unwrappedImageUrl = await unwrappedFileRef.ref.getDownloadURL()
+            }
+
+            let wrappedImageUrl = formData.wrappedImageUrl
+            if (wrappedFile != null) {
+                const wrappedExtension = getExtension(wrappedFile.value)
+                const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
+                wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
+            }
 
             const newGift = await giftsRef.doc(uid).set(
                 {
