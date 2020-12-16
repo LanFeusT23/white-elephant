@@ -1,12 +1,6 @@
 <template>
     <div v-if="finalGifts.length >= 0" class="flex-1 gifts-list">
-        <Gift 
-            v-for="gift in finalGifts"
-            :key="gift.id" 
-            v-bind="gift"
-            @click="openModal(gift.id)"
-            class="transition-transform ease-in-out transform hover:z-10 hover:scale-200">
-        </Gift>
+        <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(gift.id)" class="transition-transform ease-in-out transform hover:z-10 hover:scale-200"> </Gift>
     </div>
 
     <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
@@ -34,7 +28,7 @@ export default {
         const store = useStore()
         const selectedGiftId = ref()
         const selectedGift = computed(() => {
-            return finalGifts.value.find(x => x.id === selectedGiftId.value)
+            return finalGifts.value.find((x) => x.id === selectedGiftId.value)
         })
 
         const openModal = (giftId) => {
@@ -77,7 +71,7 @@ export default {
 
             const giftCards = wrappedGifts.map((wrappedGift) => {
                 // users and gifts share the same id from the user's uid
-                const unwrappedGift = unWrappedGifts.find((x) => x.selectedBy === wrappedGift.id)
+                const unwrappedGift = unWrappedGifts.find((x) => x.id === wrappedGift.id)
                 const selectedByUser = wrappedGifts.find((x) => x.id === unwrappedGift?.selectedBy)
 
                 let newGift = {
@@ -120,7 +114,7 @@ export default {
             openModal,
             closeModal,
             finalGifts,
-            selectedGift
+            selectedGift,
         }
     },
 }
