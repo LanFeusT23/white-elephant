@@ -1,12 +1,18 @@
 <template>
     <div v-if="finalGifts.length >= 0" class="flex-1 gifts-list">
-        <Gift v-for="(gift, index) in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(index)"> </Gift>
+        <Gift 
+            v-for="gift in finalGifts"
+            :key="gift.id" 
+            v-bind="gift"
+            @click="openModal(gift.id)"
+            class="transition-transform ease-in-out transform hover:z-10 hover:scale-200">
+        </Gift>
     </div>
 
     <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
 
     <teleport to="#modal-portal-target" v-if="isOpenModal">
-        <GiftsModal @close-modal="closeModal" :gifts="finalGifts" v-model:selectedGiftIndex="selectedGiftIndex"> </GiftsModal>
+        <GiftsModal @close-modal="closeModal" :selectedGift="selectedGift"></GiftsModal>
     </teleport>
 </template>
 
@@ -25,18 +31,19 @@ export default {
     setup() {
         const route = useRoute()
         const store = useStore()
-        const isOpenModal = ref(false)
-        const selectedGiftIndex = ref()
+        const selectedGift = ref()
 
-        const openModal = (giftIndex) => {
-            selectedGiftIndex.value = giftIndex
-            isOpenModal.value = true
+        const openModal = (giftId) => {
+            selectedGift.value = finalGifts.value.find(x => x.id === giftId)
         }
 
         const closeModal = () => {
-            selectedGiftIndex.value = undefined
-            isOpenModal.value = false
+            selectedGift.value = undefined
         }
+
+        const isOpenModal = computed(() => {
+            return selectedGift.value != null
+        })
 
         const eventRef = firestore.collection("events").doc(route.params.eventId)
         const giftsRef = eventRef.collection("gifts")
@@ -106,7 +113,7 @@ export default {
             openModal,
             closeModal,
             finalGifts,
-            selectedGiftIndex,
+            selectedGift
         }
     },
 }

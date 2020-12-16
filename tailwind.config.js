@@ -19,13 +19,17 @@ module.exports = {
             },
             minHeight: {
                 "30rem": "30rem"
+            },
+            scale: {
+                200: "2"
             }
         }
     },
     variants: {
         extend: {
             backgroundColor: ["active"],
-            opacity: ["disabled"]
+            opacity: ["disabled"],
+            zIndex: ["hover"]
         }
     },
     plugins: []
