@@ -6,7 +6,7 @@
     <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
 
     <teleport to="#modal-portal-target" v-if="isOpenModal">
-        <GiftsModal @close-modal="closeModal" :gifts="finalGifts" :selectedGiftIndex="selectedGiftIndex"> </GiftsModal>
+        <GiftsModal @close-modal="closeModal" :gifts="finalGifts" v-model:selectedGiftIndex="selectedGiftIndex"> </GiftsModal>
     </teleport>
 </template>
 
@@ -19,6 +19,7 @@ import firebaseListChangeHelper from "@/helpers/firebaseListChangeHelper"
 import { firestore } from "@/firebase"
 import { useRoute } from "vue-router"
 import { useStore } from "vuex"
+import orderBy from "lodash/orderBy"
 
 export default {
     setup() {
@@ -42,10 +43,11 @@ export default {
         const usersRef = eventRef.collection("users")
 
         const giftsList = ref([])
-        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null).onSnapshot((snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                firebaseListChangeHelper(change, giftsList)
-            })
+        const unsubscribeGifts = giftsRef.where("selectedBy", "!=", null)
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    firebaseListChangeHelper(change, giftsList)
+                })
         })
 
         const userList = ref([])
@@ -69,21 +71,29 @@ export default {
                     ...gift,
                     selectedByName: "Not Selected",
                     notAvailable: false,
+                    giftUrl: gift?.wrappedGiftUrl,
+                    selectedBy: undefined,
+                    isClaimed: false
                 }
 
                 if (unwrappedGift) {
+
                     gift = {
-                        ...gift,
                         ...unwrappedGift,
+                        ...gift,
+                        selectedBy: unwrappedGift.selectedBy,
+                        giftUrl: unwrappedGift.unwrappedGiftUrl,
                         selectedByName: selectedByUser?.displayName,
                         notAvailable: event.maxSteals <= gift.stolenCount,
+                        isClaimed: true
                     }
                 }
 
                 return gift
             })
 
-            return giftCards
+
+            return orderBy(giftCards, "id", "desc")
         })
 
         onUnmounted(() => {

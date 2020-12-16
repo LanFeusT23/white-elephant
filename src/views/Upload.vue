@@ -8,13 +8,13 @@
         </div>
 
         <div>
-            <div class="text-base">Wrapped image url</div>
+            <div class="text-base">Wrapped image url (required)</div>
             <input v-model="wrappedImageUrl" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" type="text" />
         </div>
 
         <div class="mt-2">
             <div class="text-base">Brief description of the gift</div>
-            <textarea v-model="giftDescription" class="w-full h-24 px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none"></textarea>
+            <input maxlength="255" v-model="giftDescription" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" />
         </div>
 
         <div class="flex justify-between">

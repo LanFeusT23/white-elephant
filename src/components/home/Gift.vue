@@ -1,14 +1,16 @@
 <template>
     <div class="gift" :class="cssClasses">
-        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img rounded-xl">
-            <img v-if="isClaimed" :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
+        <slot name="header"></slot>
+
+        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img filter-shadow rounded-xl">
+            <img :src="giftUrl" class="object-cover w-full h-full rounded-xl"  alt="">
         </div>
 
         <div v-if="isClaimed" class="truncate gift__username whitespace-nowrap">
             {{ selectedByName }}
         </div>
 
-        <slot></slot>
+        <slot name="footer"></slot>
     </div>
 </template>
 
@@ -16,29 +18,18 @@
 import { computed, toRefs } from 'vue'
 export default {
     props: {
-        unwrappedGiftUrl: String,
-        wrappedGiftUrl: {
-            type: String,
-            default: "../../assets/images/wrapped-gift.png"
-        },
+        id: String,
         stolenCount: Number,
         notAvailable: Boolean,
         selectedByName: String,
         selectedBy: String,
-        big: Boolean
+        big: Boolean,
+        isClaimed: Boolean,
+        giftUrl: String
     },
     setup (props) {
-        const { unwrappedGiftUrl, wrappedGiftUrl, selectedByName, big, stolenCount, notAvailable, selectedBy } = toRefs(props)
+        const { id, giftUrl, isClaimed, selectedByName, big, stolenCount, notAvailable } = toRefs(props)
         
-        const isClaimed = computed(() => {
-            return selectedBy?.value !== "" && selectedBy?.value != null
-        })
-
-        // todo change
-        const giftUrl = computed(() => {
-            return isClaimed ? unwrappedGiftUrl.value : require(wrappedGiftUrl)
-        })
-
         const cssClasses = {
             "gift--not-available": notAvailable.value,
             "gift--stolen": stolenCount?.value === 1,
@@ -51,7 +42,8 @@ export default {
             cssClasses,
             giftUrl,
             selectedByName,
-            isClaimed
+            isClaimed,
+            id
         }
     }
 }
@@ -63,7 +55,6 @@ export default {
             position: relative;
             background-image: url("../../assets/images/unwrapped-gift.png");
             background-size: contain;
-            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));
             cursor: pointer;
         }
 

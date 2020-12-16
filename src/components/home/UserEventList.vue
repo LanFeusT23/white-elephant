@@ -6,8 +6,10 @@
             </Button>
         </div>
 
-        <ol class="pl-10 list-decimal">
-            <li v-for="user in users" :key="user.id" class="relative text-lg">{{ user.displayName }} - {{ user.readyToPlay ? "Ready" : "Not Ready" }}</li>
+        <ol class="pl-10" :class="{ 'list-decimal': event?.started }">
+            <li v-for="user in users" :key="user.id" class="relative text-xl" :class="{ 'active': event?.currentPlayer === user.id }">
+                {{ user.displayName }}
+            </li>
         </ol>
     </div>
 </template>
@@ -93,6 +95,8 @@ export default {
 
 <style lang="scss" scoped>
 .active {
+    @apply text-yellow-400;
+
     &::before {
         position: absolute;
         font-family: "Font Awesome 5 Free";
@@ -100,7 +104,6 @@ export default {
         content: "\f06b";
         left: -3.5rem;
         font-size: 1.5rem;
-        @apply text-yellow-400;
     }
 }
 </style>
