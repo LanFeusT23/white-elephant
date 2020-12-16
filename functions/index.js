@@ -128,11 +128,18 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
                 if (!firstPlayerSnap.empty) {
                     const firstPlayer = firstPlayerSnap.docs[0]
 
-                    //set to the first player for the final round.
-                    eventRef.update({
-                        currentPlayer: firstPlayer.id,
-                        finalRound: true
-                    })
+                    const eventFinalRoundCheck = await (await eventRef.get()).data()
+
+                    if (eventFinalRoundCheck.finalRound) {
+                        eventRef.update({
+                            currentPlayer: null
+                        })
+                    } else {
+                        eventRef.update({
+                            currentPlayer: firstPlayer.id,
+                            finalRound: true
+                        })
+                    }
                 }
             }
         }
