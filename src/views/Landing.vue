@@ -1,5 +1,5 @@
 <template>
-    <div class="container flex flex-col items-center align-middle justify-items-center">
+    <div class="container flex flex-col items-center gap-12 align-middle justify-items-center">
         <h1 class="text-5xl text-yellow-300">Welcome to (NAME OF THE WEBSITE)!!</h1>
 
         <img class="object-scale-down h-96" src="@/assets/images/white-elephant.png" alt="Logo" />
@@ -26,6 +26,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
