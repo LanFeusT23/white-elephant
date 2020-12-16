@@ -80,7 +80,7 @@ export default {
         }
 
         const nextGift = () => {
-            if (selectedGiftIndex.value < gifts.value.length) {
+            if (selectedGiftIndex.value < gifts.value.length - 1) {
                 emit("update:selectedGiftIndex", selectedGiftIndex.value + 1)
             }
         }

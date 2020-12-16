@@ -1,10 +1,12 @@
 <template>
-    <div>
-        LANDING
+    <div class="mt-24">
+        <router-link :to="EVENTCREATE" class="text-4xl">
+            Create an event
+        </router-link>
 
-        <router-link :to="EVENTCREATE">Create an event</router-link>
-
-        <router-link v-for="event in events" :key="event.id" :to="{ ...HOME, params: { eventId: event.id } }">{{ event.name }}</router-link>
+        <router-link v-for="event in events" :key="event.id" :to="{ ...HOME, params: { eventId: event.id } }">
+            {{ event.name }}
+        </router-link>
     </div>
 </template>
 

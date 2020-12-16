@@ -68,7 +68,7 @@ export default {
         }
         
         const isLoggedInUsersTurn = computed(() => {
-            return store.state.isLoggedInUsersTurn
+            return store.getters.isLoggedInUsersTurn
         })
 
         return {
