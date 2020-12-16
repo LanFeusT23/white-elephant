@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center justify-center gap-4 p-8 w-96 h-96 bg-red-1000 bg-opacity-90 rounded-xl">
+    <div class="flex flex-col items-center justify-center gap-4 p-8 w-96 bg-red-1000 bg-opacity-90 rounded-xl">
         
         <template v-if="claimedGift">
             <img class="object-cover w-full rounded-xl filter-shadow" :src="claimedGift.unwrappedGiftUrl" :alt="claimedGift.description" :title="claimedGift.description">

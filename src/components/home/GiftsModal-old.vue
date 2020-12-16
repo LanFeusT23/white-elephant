@@ -1,10 +1,15 @@
 <template>
-    <Modal @click="closeModal">
-        <div class="flex items-center justify-center h-full" @click.prevent.stop>            
-            <Gift big v-bind="selectedGift">
+    <Modal>
+        <div class="flex items-center justify-between h-full">
+            <i :class="{ 'opacity-25': selectedGiftIndex === 0 }" 
+                @click="previousGift" 
+                class="p-2 text-6xl cursor-pointer fa fa-angle-left">
+            </i>
+            
+            <Gift big v-bind="currentGift">
                 <template #header>
                     <div class="mb-2 text-2xl">
-                        {{ selectedGift.description }}
+                        {{ currentGift.description }}
                     </div>
                 </template>
 
@@ -14,7 +19,7 @@
                             Claim this gift
                         </Button>
 
-                        <div class="text-xl text-yellow-300" secondary v-if="selectedGift.notAvailable">
+                        <div class="text-xl text-yellow-300" secondary v-if="currentGift.notAvailable">
                             This gift is no longer available :(
                         </div>
 
@@ -24,6 +29,11 @@
                     </div>
                 </template>
             </Gift>
+
+            <i :class="{ 'opacity-25': selectedGiftIndex === gifts.length - 1 }" 
+                @click="nextGift" 
+                class="p-2 text-6xl cursor-pointer fa fa-angle-right">
+            </i>
         </div>
         
         <div class="absolute cursor-pointer top-4 right-6" @click="closeModal">
@@ -42,26 +52,43 @@ import { firestore } from '@/firebase'
 import { useRoute } from 'vue-router'
 export default {
     props: {
-        selectedGift: Object
+        gifts: Array,
+        selectedGiftIndex: Number
     },
     emits: ["close-modal", "update:selectedGiftIndex"],
     setup (props, { emit }) {
         const route = useRoute()
         const store = useStore()
-        const { selectedGift } = toRefs(props)
+        const { gifts, selectedGiftIndex } = toRefs(props)
 
-       const isAlreadyUsersGift = computed(() => {
-            return selectedGift.value.selectedBy === store.state.user.uid
+        const currentGift = computed(() => {
+            return gifts.value[selectedGiftIndex.value]
+        })
+
+        const isAlreadyUsersGift = computed(() => {
+            return currentGift.value.selectedBy === store.state.user.uid
         })
 
         const closeModal = () => {
             emit("close-modal")
         }
 
+        const previousGift = () => {
+            if (selectedGiftIndex.value > 0) {
+                emit("update:selectedGiftIndex", selectedGiftIndex.value - 1)
+            }
+        }
+
+        const nextGift = () => {
+            if (selectedGiftIndex.value < gifts.value.length - 1) {
+                emit("update:selectedGiftIndex", selectedGiftIndex.value + 1)
+            }
+        }
+
         const claimGift = () => {
             firestore
                 .collection("events").doc(route.params.eventId) 
-                .collection("gifts").doc(selectedGift.value.id)
+                .collection("gifts").doc(currentGift.value.id)
                 .update({
                     selectedBy: store.state.user.uid
                 })
@@ -72,7 +99,7 @@ export default {
         })
 
         const canBeClaimed = computed(() => {
-            return !isAlreadyUsersGift.value && !selectedGift.value.notAvailable && isLoggedInUsersTurn.value
+            return !isAlreadyUsersGift.value && !currentGift.value.notAvailable && isLoggedInUsersTurn.value
         })
 
         return {
@@ -83,9 +110,17 @@ export default {
             isLoggedInUsersTurn,
             closeModal,
             claimGift,
-            selectedGift,
-            canBeClaimed
+            previousGift,
+            nextGift,
+            gifts,
+            currentGift,
+            canBeClaimed,
+            selectedGiftIndex
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
