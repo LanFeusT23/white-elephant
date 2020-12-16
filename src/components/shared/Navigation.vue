@@ -7,6 +7,7 @@
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-4">
                 <span class="text-xl">{{ user?.displayName }}</span>
+                <span class="hidden">{{ user?.uid }}</span>
 
                 <span class="text-sm cursor-pointer" v-if="user" @click="signOut">Log Out</span>
             </div>
@@ -36,7 +37,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
