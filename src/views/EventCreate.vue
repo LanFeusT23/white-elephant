@@ -1,8 +1,8 @@
 <template>
-    <div class="flex flex-col event-create-page justify-items-center">
+    <div class="flex flex-col gap-4 mt-24 event-create-page justify-items-center">
         <div>
-            <label for="event-name">Event name</label>
-            <input id="event-name" v-model="eventName" type="text" class="text-black" />
+            <div>Event name</div>
+            <input id="event-name" v-model="eventName" type="text" class="px-4 py-2 text-black focus:outline-none active:outline-none w-96 rounded-xl" />
         </div>
         <Button @click="createEvent"> Create Event </Button>
     </div>

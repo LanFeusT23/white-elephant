@@ -1,6 +1,6 @@
 <template>
     <div class="p-8 pt-5 w-72 bg-red-1000 bg-opacity-90 rounded-xl">
-        <div class="flex justify-center mb-4">
+        <div class="flex justify-center mb-4" v-if="!event?.started">
             <Button @click="goToUpload">
                 {{ uploadText }}
             </Button>
@@ -21,6 +21,7 @@ import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { firestore } from "@/firebase"
 import { UPLOAD } from "@/router"
+import orderBy from 'lodash/orderBy'
 
 export default {
     setup() {
@@ -65,6 +66,10 @@ export default {
                 })
             })
 
+        const orderedUsers = computed(() => {
+            return orderBy(users.value, "order")
+        })
+
         onUnmounted(() => {
             unsubscribeUsers()
             unsubscribeEvent()
@@ -85,7 +90,7 @@ export default {
         return {
             event,
             Button,
-            users,
+            users: orderedUsers,
             goToUpload,
             uploadText
         }
