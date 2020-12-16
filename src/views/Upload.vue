@@ -16,7 +16,7 @@
 
         <div class="mt-2">
             <div class="text-lg">Brief description of the gift</div>
-            <input maxlength="255" v-model="giftDescription" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" />
+            <input maxlength="40" v-model="giftDescription" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" />
         </div>
 
         <div class="flex justify-between">

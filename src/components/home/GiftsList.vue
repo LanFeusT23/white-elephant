@@ -82,6 +82,7 @@ export default {
                     giftUrl: wrappedGift?.wrappedGiftUrl,
                     selectedBy: undefined,
                     isClaimed: false,
+                    stolenCount: 0
                 }
 
                 if (unwrappedGift) {
