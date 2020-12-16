@@ -6,7 +6,10 @@
                 {{ claimedGift.description }}
             </div>
 
-            <img class="object-cover w-full rounded-xl filter-shadow" :src="claimedGift.unwrappedGiftUrl" :alt="claimedGift.description" :title="claimedGift.description">
+            <img class="object-cover w-full rounded-xl filter-shadow"
+                :src="claimedGift.unwrappedGiftUrl" 
+                :alt="claimedGift.description" 
+                :title="claimedGift.description" />
             
             <div class="text-4xl">
                 Your selected gift!
