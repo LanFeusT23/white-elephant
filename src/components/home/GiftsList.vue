@@ -1,6 +1,7 @@
 <template>
     <div v-if="finalGifts.length >= 0" class="flex-1 gifts-list">
-        <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(gift.id)" class="transition-transform ease-in-out transform hover:z-10 hover:scale-200"> </Gift>
+        <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(gift.id)" 
+            class="transition-transform ease-in-out transform hover:z-10 hover:scale-200"> </Gift>
     </div>
 
     <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
@@ -90,7 +91,7 @@ export default {
                         selectedBy: unwrappedGift.selectedBy,
                         giftUrl: unwrappedGift.unwrappedGiftUrl,
                         selectedByName: selectedByUser?.displayName,
-                        notAvailable: event.maxSteals <= wrappedGift.stolenCount,
+                        notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
                         isClaimed: true,
                     }
                 }
