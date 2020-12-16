@@ -79,14 +79,22 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
                 stolenCount: admin.firestore.FieldValue.increment(1)
             })
 
-            // const currentUserPreviouslySelectedGift = await giftsRef.where("selectedBy", "==", after.selectedBy).get()
-            // currentUserPreviouslySelectedGift.forEach(element => {
-            //     if (element.exists) {
-            //         giftsRef.doc(element.id).update({
-            //             selectedBy: null
-            //         })
-            //     }
-            // })
+            const eventFinalRoundCheck = await (await eventRef.get()).data()
+
+            if (eventFinalRoundCheck.finalRound) {
+                const currentUserPreviouslySelectedGift = await giftsRef
+                    .where("selectedBy", "==", after.selectedBy)
+                    .limit(1)
+                    .get()
+
+                if (!currentUserPreviouslySelectedGift.empty) {
+                    const previousDoc = currentUserPreviouslySelectedGift.docs[0]
+
+                    giftsRef.doc(previousDoc.id).update({
+                        selectedBy: null
+                    })
+                }
+            }
 
             await eventRef.update({
                 currentPlayer: before.selectedBy
@@ -122,7 +130,8 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
 
                     //set to the first player for the final round.
                     eventRef.update({
-                        currentPlayer: firstPlayer.id
+                        currentPlayer: firstPlayer.id,
+                        finalRound: true
                     })
                 }
             }
