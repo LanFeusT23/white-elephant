@@ -1,9 +1,9 @@
 <template>
      <div class="border border-dashed rounded-xl" @drop.prevent="addFile" @dragover.prevent="dragover" @dragleave.prevent="dragleave">
-        <label class="block p-4 cursor-pointer" for="unwrappedAssetField">
+        <label class="block p-4 cursor-pointer" :for="`assetField-${id}`">
             <input
-                id="unwrappedAssetField"
-                name="fields[unwrappedAssetField][]"
+                :id="`assetField-${id}`"
+                :name="`fields[assetField-${id}][]`"
                 ref="fileEl"
                 class="hidden w-full px-4 py-1 text-black bg-white border rounded-lg focus:outline-none active:outline-none" 
                 type="file"
@@ -27,12 +27,13 @@ const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
 
 export default {
     props: {
-        modelValue: undefined
+        modelValue: Object,
+        id: String
     },
     emits: ["update:modelValue"],
     setup (props, { emit }) {
         
-        const { modelValue } = toRefs(props)
+        const { modelValue, id } = toRefs(props)
         const fileEl = ref(null)
         const addFile = (e) => {
             let files = e.dataTransfer.files;
@@ -62,6 +63,7 @@ export default {
         }
 
         return {
+            id,
             modelValue,
             fileEl,
             addFile,

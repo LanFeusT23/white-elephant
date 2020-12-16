@@ -4,12 +4,12 @@
 
         <div class="mt-2">
             <div class="text-lg">Unwrapped image url (required)</div>
-            <FileUpload v-model="unWrappedFile"></FileUpload>
+            <FileUpload v-model="unWrappedFile" :id="'unwrappedFile'"></FileUpload>
         </div>
 
         <div class="mt-2">
             <div class="text-lg">Wrapped image url (required)</div>
-            <FileUpload v-model="wrappedFile"></FileUpload>
+            <FileUpload v-model="wrappedFile" :id="'wrappedFile'"></FileUpload>
         </div>
 
         <div class="mt-2">
