@@ -38,7 +38,7 @@ import Modal from "@/components/shared/Modal"
 import Button from "@/components/shared/Button"
 import { computed, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
-import { firestore } from '@/firebase'
+import { firestore, serverTimestamp } from '@/firebase'
 import { useRoute } from 'vue-router'
 export default {
     props: {
@@ -59,10 +59,25 @@ export default {
         }
 
         const claimGift = async () => {
+            // reset my previously claimed gift 
+            const eventRef = firestore.collection("events").doc(route.params.eventId)
+            const giftsRef = eventRef.collection("gifts")
+
+            const myPreviouslySelectedGifts = (await giftsRef.where("selectedBy", "==", store.state.user.uid).get())
+            myPreviouslySelectedGifts.forEach(element => {
+                // should only be one...
+                if (element.exists) {
+                    giftsRef.doc(element.id).update({
+                        selectedBy: null
+                    })
+                }
+            });
+
             let giftDoc = firestore
                 .collection("events").doc(route.params.eventId) 
                 .collection("gifts").doc(selectedGift.value.id)
                     .update({
+                        // updatedTimeStamp: serverTimestamp(),
                         selectedBy: store.state.user.uid,
                         revealed: true
                     })
