@@ -1,19 +1,19 @@
 <template>
-    <div class="text-lg w-96">
+    <div class="text-xl w-96">
         <div class="text-4xl text-yellow-300">Upload your gift image!</div>
 
         <div class="mt-2">
-            <div class="text-base">Unwrapped image url (required)</div>
-            <input v-model="unwrappedImageUrl" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" type="text" />
-        </div>
-
-        <div>
-            <div class="text-base">Wrapped image url (required)</div>
-            <input v-model="wrappedImageUrl" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" type="text" />
+            <div class="text-lg">Unwrapped image url (required)</div>
+            <FileUpload v-model="unWrappedFile" :id="'unwrappedFile'"></FileUpload>
         </div>
 
         <div class="mt-2">
-            <div class="text-base">Brief description of the gift</div>
+            <div class="text-lg">Wrapped image url (required)</div>
+            <FileUpload v-model="wrappedFile" :id="'wrappedFile'"></FileUpload>
+        </div>
+
+        <div class="mt-2">
+            <div class="text-lg">Brief description of the gift</div>
             <input maxlength="255" v-model="giftDescription" class="w-full px-4 py-1 mb-2 text-black bg-white border rounded-lg focus:outline-none active:outline-none" />
         </div>
 
@@ -26,11 +26,15 @@
 
 <script>
 import Button from "@/components/shared/Button"
-import { computed, reactive, ref, toRefs } from "vue"
+import FileUpload from "@/components/shared/FileUpload"
+import { computed, onMounted, reactive, ref, toRefs, watch } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { HOME } from "@/router"
-import { firestore } from "@/firebase"
+import { firestore, storage } from "@/firebase"
+
+const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
+
 export default {
     setup() {
         const route = useRoute()
@@ -93,12 +97,18 @@ export default {
             router.push(HOME)
         }
 
+        const unWrappedFile = ref()
+        const wrappedFile = ref()
+        
         return {
+            Button,
+            FileUpload,
             ...toRefs(formData),
             disableButton,
             upload,
-            Button,
-            goToEvent
+            goToEvent,
+            wrappedFile,
+            unWrappedFile
         }
     },
 }
