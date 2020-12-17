@@ -1,5 +1,5 @@
 <template>
-    <div class="text-xl">
+    <div class="text-xl" v-if="!eventHasStarted">
         <div class="text-4xl text-yellow-300">Upload your gift image!</div>
 
         <img v-if="loading" src="@/assets/images/candy-cane-animated.gif" alt="animated candy cane" />
@@ -13,13 +13,13 @@
             <div class="flex gap-8 mt-2">
                 <div>
                     <div class="text-lg">Unwrapped image url (required)</div>
-                    <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
+                    <FileUpload class="w-96" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
                     <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="unwrappedImagePreview" />
                 </div>
 
                 <div>
                     <div class="text-lg">Wrapped image url (required)</div>
-                    <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
+                    <FileUpload class="w-96" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
                     <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="wrappedImagePreview" />
                 </div>
             </div>
@@ -29,6 +29,10 @@
                 <Button @click="goToEvent" secondary>Cancel</Button>
             </div>
         </template>
+    </div>
+    <div v-else>
+        Event has already started, you cannot change your gift!
+        <router-link class="text-yellow-300" :to="HOME">Go back to event</router-link>
     </div>
 </template>
 
@@ -54,6 +58,9 @@ export default {
         const router = useRouter()
         const store = useStore()
         const { uid, displayName } = store.state.user
+        const eventHasStarted = computed(() => {
+            return store.state.event.started
+        })
 
         const eventId = route.params.eventId
         const eventRef = firestore.collection("events").doc(eventId)
@@ -171,6 +178,8 @@ export default {
             wrappedImagePreview,
             unwrappedImagePreview,
             loading,
+            eventHasStarted,
+            HOME
         }
     },
 }
