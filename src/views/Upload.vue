@@ -10,13 +10,13 @@
         <div class="flex gap-8 mt-2">
             <div>
                 <div class="text-lg">Unwrapped image url (required)</div>
-                <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
+                <FileUpload class="w-96" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
                 <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="unwrappedImagePreview" />
             </div>
 
             <div>
                 <div class="text-lg">Wrapped image url (required)</div>
-                <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
+                <FileUpload class="w-96" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
                 <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="wrappedImagePreview" />
             </div>
         </div>

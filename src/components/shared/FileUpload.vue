@@ -1,5 +1,5 @@
 <template>
-    <div class="border border-dashed rounded-xl" :class="{ 'bg-red-500': dragging }" @drop.prevent="addFile" @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false">
+    <div class="border border-dashed rounded-xl bg-opacity-90" :class="{ 'bg-red-500': dragging, 'bg-red-800 ': !dragging }" @drop.prevent="addFile" @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false">
         <label class="block p-4 cursor-pointer" :for="`assetField-${id}`">
             <input
                 :id="`assetField-${id}`"
