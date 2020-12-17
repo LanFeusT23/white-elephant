@@ -2,6 +2,7 @@ import firebase from "firebase/app"
 import "firebase/firestore"
 import "firebase/auth"
 import "firebase/storage"
+import "firebase/performance"
 // @ts-ignore
 import firebaseSettings from "../firebase.json"
 
@@ -20,6 +21,8 @@ const firebaseConfig = {
 }
 
 const app = firebase.initializeApp(firebaseConfig)
+firebase.performance()
+
 export const firestore = firebase.firestore()
 
 export const auth = firebase.auth()
