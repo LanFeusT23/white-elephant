@@ -1,8 +1,6 @@
 <template>
     <div class="mt-24">
-        <router-link :to="EVENTCREATE" class="block text-4xl hover:text-yellow-300">
-            Create an event
-        </router-link>
+        <router-link :to="EVENTCREATE" class="block text-4xl hover:text-yellow-300"> Create an event </router-link>
 
         <router-link class="block hover:text-yellow-300" v-for="event in events" :key="event.id" :to="{ ...HOME, params: { eventId: event.id } }">
             {{ event.name }}
@@ -13,7 +11,7 @@
 <script>
 import { firestore } from "@/firebase"
 import { EVENTCREATE, HOME } from "@/router"
-import { ref, onUnmounted } from "vue"
+import { ref, onUnmounted, onMounted } from "vue"
 export default {
     setup() {
         const events = ref([])
@@ -36,6 +34,10 @@ export default {
                     events.value.splice(oldIndex, 1)
                 }
             })
+        })
+
+        onMounted(() => {
+            document.title = "Event Landing | WEEP"
         })
 
         onUnmounted(() => {

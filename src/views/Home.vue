@@ -20,7 +20,7 @@ export default {
         return {
             UserSelectedGift,
             GiftsList,
-            UserEventList
+            UserEventList,
         }
     },
 }

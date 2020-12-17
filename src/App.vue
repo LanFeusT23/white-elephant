@@ -5,13 +5,18 @@
 </template>
 
 <script>
-    import Navigation from "@/components/shared/Navigation"
+import { onMounted } from "vue"
+import Navigation from "@/components/shared/Navigation"
 
-    export default {
-        setup () {
-            return {
-                Navigation
-            }
+export default {
+    setup() {
+        onMounted(() => {
+            document.title = "WEEP"
+        })
+
+        return {
+            Navigation,
         }
-    }
+    },
+}
 </script>

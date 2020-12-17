@@ -9,13 +9,9 @@
                     </span>
                 </div>
 
-                <div v-if="isLoggedInUsersTurn" class="flex gap-4 text-4xl text-yellow-400">
-                    <i class="fa fa-gift" />Your turn to pick a gift<i class="fa fa-gift" />
-                </div>
+                <div v-if="isLoggedInUsersTurn" class="flex gap-4 text-4xl text-yellow-400"><i class="fa fa-gift" />Your turn to pick a gift<i class="fa fa-gift" /></div>
 
-                <Button v-if="isAdminUser" :disabled="event?.started" @click="startEvent">
-                    Start Event
-                </Button>
+                <Button v-if="isAdminUser" :disabled="event?.started" @click="startEvent"> Start Event </Button>
                 <div v-else></div>
             </div>
         </teleport>
@@ -26,19 +22,18 @@
 import Home from "@/views/Home.vue"
 import Upload from "@/views/Upload.vue"
 import Button from "@/components/shared/Button"
-import { computed, toRefs, watch } from "vue";
+import { computed, toRefs, watch, onMounted } from "vue"
 import { useStore } from "vuex"
-import { useRoute } from 'vue-router';
-import { firestore } from '@/firebase';
+import { useRoute } from "vue-router"
+import { firestore } from "@/firebase"
 
 export default {
     props: {
-        eventId: String
+        eventId: String,
     },
-    setup (props) {
-
+    setup(props) {
         const route = useRoute()
-        const store = useStore();
+        const store = useStore()
 
         const { eventId } = toRefs(props)
         const event = computed(() => {
@@ -49,24 +44,38 @@ export default {
             return store.state.user != undefined && store.state.user.uid === event.value?.createdBy
         })
 
+        watch(
+            event,
+            (e) => {
+                document.title = `${e?.name} | WEEP`
+            },
+            { immediate: true }
+        )
+
         let unsubscribeEvent
-        watch(eventId, (newId, oldId) => {
-            unsubscribeEvent?.()
+        watch(
+            eventId,
+            (newId, oldId) => {
+                unsubscribeEvent?.()
 
-            unsubscribeEvent = firestore.collection("events").doc(newId)
-                .onSnapshot(snapshot => {
-                    const event = snapshot.data()
+                unsubscribeEvent = firestore
+                    .collection("events")
+                    .doc(newId)
+                    .onSnapshot((snapshot) => {
+                        const event = snapshot.data()
 
-                    store.commit("setEvent", event)
-            })
-        }, { immediate: true })
+                        store.commit("setEvent", event)
+                    })
+            },
+            { immediate: true }
+        )
 
         const startEvent = async () => {
             firestore.collection("events").doc(eventId.value).update({
-                started: true
+                started: true,
             })
         }
-        
+
         const isLoggedInUsersTurn = computed(() => {
             return store.getters.isLoggedInUsersTurn
         })
@@ -76,8 +85,8 @@ export default {
             isAdminUser,
             event,
             isLoggedInUsersTurn,
-            startEvent
+            startEvent,
         }
-    }
+    },
 }
 </script>

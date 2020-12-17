@@ -14,7 +14,7 @@ import { useStore } from "vuex"
 import Button from "@/components/shared/Button"
 import { useRouter } from "vue-router"
 import { HOME } from "@/router"
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
 import { firestore } from "@/firebase"
 
 export default {
@@ -25,6 +25,10 @@ export default {
         const user = store.state.user
 
         const eventName = ref("")
+
+        onMounted(() => {
+            document.title = "Create Event | WEEP"
+        })
 
         const createEvent = async () => {
             const newEvent = await firestore.collection("events").add({
