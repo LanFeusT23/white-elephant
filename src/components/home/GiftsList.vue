@@ -1,10 +1,13 @@
 <template>
-    <div v-if="finalGifts.length >= 0" class="flex-1 gifts-list">
-        <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(gift.id)" 
-            class="transition-transform ease-in-out transform hover:z-10 hover:scale-200"> </Gift>
-    </div>
+    <img v-if="loading" src="@/assets/images/candy-cane-animated.gif" alt="animated candy cane" />
 
-    <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
+    <template v-else>
+        <div v-if="finalGifts.length > 0" class="flex-1 gifts-list">
+            <Gift v-for="gift in finalGifts" :key="gift.id" v-bind="gift" @click="openModal(gift.id)" class="transition-transform ease-in-out transform hover:z-10 hover:scale-200"> </Gift>
+        </div>
+
+        <div v-else class="flex items-center justify-center flex-1 text-4xl text-yellow-300">No gifts added yet!</div>
+    </template>
 
     <teleport to="#modal-portal-target" v-if="isOpenModal">
         <GiftsModal @close-modal="closeModal" :selectedGift="selectedGift"></GiftsModal>
@@ -28,6 +31,7 @@ export default {
         const route = useRoute()
         const store = useStore()
         const selectedGiftId = ref()
+        const loading = ref(true)
         const selectedGift = computed(() => {
             return finalGifts.value.find((x) => x.id === selectedGiftId.value)
         })
@@ -50,6 +54,7 @@ export default {
 
         const unWrappedGiftsList = ref([])
         const unsubscribeGifts = giftsRef.where("revealed", "==", true).onSnapshot((snapshot) => {
+            loading.value = false
             snapshot.docChanges().forEach((change) => {
                 firebaseListChangeHelper(change, unWrappedGiftsList)
             })
@@ -57,6 +62,7 @@ export default {
 
         const wrappedGiftsList = ref([])
         const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) => {
+            loading.value = false
             snapshot.docChanges().forEach((change) => {
                 firebaseListChangeHelper(change, wrappedGiftsList)
             })
@@ -82,7 +88,7 @@ export default {
                     giftUrl: wrappedGift?.wrappedGiftUrl,
                     selectedBy: undefined,
                     isClaimed: false,
-                    stolenCount: 0
+                    stolenCount: 0,
                 }
 
                 if (unwrappedGift) {
@@ -117,6 +123,7 @@ export default {
             closeModal,
             finalGifts,
             selectedGift,
+            loading,
         }
     },
 }
