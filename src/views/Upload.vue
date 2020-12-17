@@ -2,29 +2,33 @@
     <div class="text-xl">
         <div class="text-4xl text-yellow-300">Upload your gift image!</div>
 
-        <div class="mt-2">
-            <div class="text-lg">Brief description of the gift (required, max 40 chars)</div>
-            <input maxlength="40" v-model="giftDescription" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg w-96 focus:outline-none active:outline-none" />
-        </div>
+        <img v-if="loading" src="@/assets/images/candy-cane-animated.gif" alt="animated candy cane" />
 
-        <div class="flex gap-8 mt-2">
-            <div>
-                <div class="text-lg">Unwrapped image url (required)</div>
-                <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
-                <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="unwrappedImagePreview" />
+        <template v-else>
+            <div class="mt-2">
+                <div class="text-lg">Brief description of the gift (required, max {{ giftDescription.length }} / 40 chars)</div>
+                <input maxlength="40" v-model="giftDescription" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg w-96 focus:outline-none active:outline-none" />
             </div>
 
-            <div>
-                <div class="text-lg">Wrapped image url (required)</div>
-                <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
-                <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="wrappedImagePreview" />
-            </div>
-        </div>
+            <div class="flex gap-8 mt-2">
+                <div>
+                    <div class="text-lg">Unwrapped image url (required)</div>
+                    <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="unWrappedFile" :id="'unwrapped'"></FileUpload>
+                    <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="unwrappedImagePreview" />
+                </div>
 
-        <div class="flex justify-between mt-4 w-96">
-            <Button @click="upload" :disabled="disableButton">Upload</Button>
-            <Button @click="goToEvent" secondary>Cancel</Button>
-        </div>
+                <div>
+                    <div class="text-lg">Wrapped image url (required)</div>
+                    <FileUpload class="bg-red-800 w-96 bg-opacity-90" v-model:file="wrappedFile" :id="'wrapped'"></FileUpload>
+                    <img class="object-cover mt-2 w-96 rounded-xl filter-shadow" :src="wrappedImagePreview" />
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-4 w-96">
+                <Button @click="upload" :disabled="disableButton">Upload</Button>
+                <Button @click="goToEvent" secondary>Cancel</Button>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -45,6 +49,7 @@ function getExtension(file) {
 
 export default {
     setup() {
+        const loading = ref(false)
         const route = useRoute()
         const router = useRouter()
         const store = useStore()
@@ -96,11 +101,18 @@ export default {
         })
 
         const disableButton = computed(() => {
-            console.log(formData.giftDescription);
-            return wrappedImagePreview.value == null || unwrappedImagePreview.value == null || formData.giftDescription == null || formData.giftDescription.trim() == ""
+            return (
+                wrappedImagePreview.value == null ||
+                unwrappedImagePreview.value == null ||
+                formData.giftDescription == null ||
+                formData.giftDescription.trim() == "" ||
+                formData.giftDescription?.length > 40 ||
+                loading.value === true
+            )
         })
 
         const upload = async () => {
+            loading.value = true
             let unwrappedImageUrl = formData.unwrappedImageUrl
 
             if (unWrappedFile.value != null) {
@@ -138,6 +150,8 @@ export default {
                 { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
             )
 
+            loading.value = false
+
             router.push(HOME)
         }
 
@@ -156,6 +170,7 @@ export default {
             unWrappedFile,
             wrappedImagePreview,
             unwrappedImagePreview,
+            loading,
         }
     },
 }
