@@ -55,8 +55,6 @@ export default {
 .gift {
     &__img {
         position: relative;
-        // background-image: url("../../assets/images/unwrapped-gift.png");
-        // background-size: contain;
         cursor: pointer;
     }
 
@@ -110,6 +108,10 @@ export default {
                 @apply text-red-500 rounded-xl top-0 left-0 bottom-0 right-0 grid place-items-center absolute;
             }
         }
+    }
+
+    &__username {
+        filter: drop-shadow(4px 4px 8px black)
     }
 }
 </style>
