@@ -2,7 +2,7 @@
     <div class="gift" :class="cssClasses">
         <slot name="header"></slot>
 
-        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img filter-shadow rounded-xl bg-red-1000">
+        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 bg-gray-900 gift__img filter-shadow rounded-xl">
             <img :src="giftUrl" class="object-cover w-full h-full rounded-xl" alt="" />
         </div>
 

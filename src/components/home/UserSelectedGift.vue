@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center justify-center gap-4 p-8 w-96 bg-red-1000 bg-opacity-90 rounded-xl">
+    <div class="flex flex-col items-center justify-center gap-4 p-8 w-96 bg-gray-900 bg-opacity-90 rounded-xl">
         
         <template v-if="claimedGift">
             <div class="self-start text-lg">
