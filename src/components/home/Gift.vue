@@ -2,7 +2,7 @@
     <div class="gift" :class="cssClasses">
         <slot name="header"></slot>
 
-        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img filter-shadow rounded-xl bg-red-1000">
+        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img filter-shadow rounded-xl bg-gray-900">
             <img :src="giftUrl" class="object-cover w-full h-full rounded-xl" alt="" />
         </div>
 
@@ -76,7 +76,7 @@ export default {
                 font-family: "Font Awesome 5 Free";
                 font-weight: 900;
                 font-size: 20px;
-                @apply bottom-0 left-0 p-1 absolute text-red-600;
+                @apply bottom-0 left-0 p-1 absolute text-gray-600;
             }
         }
     }
@@ -105,7 +105,7 @@ export default {
                 content: "\f057";
                 background: rgba(0, 0, 0, 0.5);
                 font-size: 48px;
-                @apply text-red-500 rounded-xl top-0 left-0 bottom-0 right-0 grid place-items-center absolute;
+                @apply text-gray-500 rounded-xl top-0 left-0 bottom-0 right-0 grid place-items-center absolute;
             }
         }
     }
