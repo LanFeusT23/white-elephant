@@ -18,7 +18,7 @@ export default {
 
         const cssClasses = {
             "text-black bg-white active:bg-gray-300 hover:bg-opacity-80 border border-transparent": !secondary.value,
-            "text-white border border-white active:bg-red-900 bg-opacity-10 hover:bg-red-800": secondary.value
+            "text-white border border-white active:bg-gray-900 bg-opacity-10 hover:bg-gray-800": secondary.value
         }
 
         return {

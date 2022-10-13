@@ -1,13 +1,21 @@
 @import "tailwind.css";
 
+@layer base {
+    @font-face {
+        font-family: "Nerko One";
+        font-weight: 400;
+        src: url("./fonts/NerkoOne-Regular.ttf") format("truetype");
+    }
+}
+
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 
-body {
-    background: url("./images/xmas-tree.png") bottom right no-repeat, url("./images/menorah.png") bottom left / 300px no-repeat;
-}
+// body {
+//     background: url("./images/xmas-tree.png") bottom right no-repeat, url("./images/menorah.png") bottom left / 300px no-repeat;
+// }
 
 .filter-shadow {
     filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.5));

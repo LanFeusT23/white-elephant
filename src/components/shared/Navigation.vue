@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center justify-between h-24 gap-8 px-8 shadow-xl bg-opacity-90 bg-red-1000">
+    <div class="flex items-center justify-between h-24 gap-8 px-8 shadow-xl bg-opacity-90 bg-gray-900">
         <div ref="snowflake" class="absolute opacity-0">❄️</div>
 
         <router-link @mouseenter="hovered = true" @mouseleave="hovered = false" to="/">
