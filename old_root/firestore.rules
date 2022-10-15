@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /events/{eventId}{
+      allow read: if isBlizzard();
+      allow create: if request.auth.uid == request.resource.data.createdBy && isBlizzard();
+      allow update: if request.auth.uid == resource.data.createdBy && isBlizzard();
+
+      match /users/{userId}{
+        allow read: if isBlizzard();
+        allow create: if request.auth.uid == userId && isBlizzard() && getEvent().started  == false;
+        allow update: if request.auth.uid == userId && isBlizzard() && getEvent().started  == false;
+      }
+
+      match /gifts/{giftId}{
+        allow read: if isBlizzard() && isAllowedToReadGift(giftId);
+        allow create: if isBlizzard() && request.auth.uid == giftId;
+        allow update: if isBlizzard() && isAllowedToUpdateGift(giftId);   
+      }
+
+      function isBlizzard(){
+        return  request.auth != null && request.auth.token.email.matches(".*@blizzard.com$");
+      }
+
+      function isAllowedToReadGift(giftId){
+            let uid = request.auth.uid;
+
+            return resource.data.selectedBy != null || resource.data.revealed == true || (uid == giftId && getEvent().started == false); 
+      }
+
+      function isAllowedToUpdateGift(giftId){
+            let uid = request.auth.uid;
+            let event = getEvent();
+
+          return (uid == giftId && event.started == false) || 
+                    (event.currentPlayer == uid && event.maxSteals > resource.data.stolenCount);
+      }
+
+      function getEvent(){
+        return get(/databases/$(database)/documents/events/$(eventId)).data;
+      }
+    }
+  }
+}

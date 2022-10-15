@@ -1,0 +1,18 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+
+      match /events/{eventId}/gifts/{giftId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth.uid == giftId;
+      }
+
+      match /events/{eventId}/users/{userId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth.uid == userId;
+      }
+    }
+  }
+}

@@ -43,7 +43,7 @@ import { computed, onMounted, reactive, ref, toRefs, watch } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { HOME } from "@/router"
-// import { firestore, storage } from "@/firebase"
+import { firestore, storage } from "@/firebase"
 
 const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
 
@@ -179,7 +179,7 @@ export default {
             unwrappedImagePreview,
             loading,
             eventHasStarted,
-            HOME,
+            HOME
         }
     },
 }

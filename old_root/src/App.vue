@@ -4,13 +4,19 @@
     <div id="modal-portal-target"></div>
 </template>
 
-<script setup lang="ts">
-import Navigation from "@/components/shared/Navigation.vue"
+<script>
 import { onMounted } from "vue"
+import Navigation from "@/components/shared/Navigation"
 
-onMounted(() => {
-    document.title = "WEEP"
-})
+export default {
+    setup() {
+        onMounted(() => {
+            document.title = "WEEP"
+        })
+
+        return {
+            Navigation,
+        }
+    },
+}
 </script>
-
-<style scoped></style>
