@@ -72,6 +72,11 @@ export default {
             return store.state.event
         })
 
+        const replaceWithResizedUrl = (url) => {
+            // wrapped and unwrapped both contain the word "wrapped" so this will work for both
+            return url?.replace("wrapped.", "wrapped_400x400.")
+        }
+
         const finalGifts = computed(() => {
             const unWrappedGifts = unWrappedGiftsList.value
             const wrappedGifts = wrappedGiftsList.value
@@ -85,7 +90,7 @@ export default {
                     ...wrappedGift,
                     selectedByName: "Not Selected",
                     notAvailable: false,
-                    giftUrl: wrappedGift?.wrappedGiftUrl,
+                    giftUrl: replaceWithResizedUrl(wrappedGift?.wrappedGiftUrl),
                     selectedBy: undefined,
                     isClaimed: false,
                     stolenCount: 0,
@@ -96,7 +101,7 @@ export default {
                         ...unwrappedGift,
                         ...wrappedGift,
                         selectedBy: unwrappedGift.selectedBy,
-                        giftUrl: unwrappedGift.unwrappedGiftUrl,
+                        giftUrl: replaceWithResizedUrl(unwrappedGift.unwrappedGiftUrl),
                         selectedByName: selectedByUser?.displayName,
                         notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
                         isClaimed: true,
