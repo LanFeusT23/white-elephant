@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import Button from "@/components/shared/Button"
-import FileUpload from "@/components/shared/FileUpload"
+import Button from "@/components/shared/Button.vue"
+import FileUpload from "@/components/shared/FileUpload.vue"
 import { computed, onMounted, reactive, ref, toRefs, watch } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"

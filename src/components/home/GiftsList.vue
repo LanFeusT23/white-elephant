@@ -16,9 +16,9 @@
 
 <script>
 import { computed, onUnmounted, ref, toRefs } from "vue"
-import Gift from "@/components/home/Gift"
-import GiftsModal from "@/components/home/GiftsModal"
-import Button from "@/components/shared/Button"
+import Gift from "@/components/home/Gift.vue"
+import GiftsModal from "@/components/home/GiftsModal.vue"
+import Button from "@/components/shared/Button.vue"
 import firebaseListChangeHelper from "@/helpers/firebaseListChangeHelper"
 import { firestore } from "@/firebase"
 import { useRoute } from "vue-router"

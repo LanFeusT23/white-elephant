@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import UserSelectedGift from "@/components/home/UserSelectedGift"
-import GiftsList from "@/components/home/GiftsList"
-import UserEventList from "@/components/home/UserEventList"
+import UserSelectedGift from "@/components/home/UserSelectedGift.vue"
+import GiftsList from "@/components/home/GiftsList.vue"
+import UserEventList from "@/components/home/UserEventList.vue"
 
 export default {
     name: "Home",

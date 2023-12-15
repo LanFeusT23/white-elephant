@@ -6,7 +6,7 @@
 
 <script>
 import { onMounted } from "vue"
-import Navigation from "@/components/shared/Navigation"
+import Navigation from "@/components/shared/Navigation.vue"
 
 export default {
     setup() {

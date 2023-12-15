@@ -21,7 +21,7 @@
 <script>
 import Home from "@/views/Home.vue"
 import Upload from "@/views/Upload.vue"
-import Button from "@/components/shared/Button"
+import Button from "@/components/shared/Button.vue"
 import { computed, toRefs, watch, onMounted } from "vue"
 import { useStore } from "vuex"
 import { useRoute } from "vue-router"

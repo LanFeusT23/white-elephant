@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Button from "@/components/shared/Button"
+import Button from "@/components/shared/Button.vue"
 import { computed, ref, onUnmounted, watch } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"

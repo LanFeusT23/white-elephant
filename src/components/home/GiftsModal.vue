@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import Gift from "@/components/home/Gift"
-import Modal from "@/components/shared/Modal"
-import Button from "@/components/shared/Button"
+import Gift from "@/components/home/Gift.vue"
+import Modal from "@/components/shared/Modal.vue"
+import Button from "@/components/shared/Button.vue"
 import { computed, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 import { firestore, serverTimestamp } from '@/firebase'
