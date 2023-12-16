@@ -4,19 +4,10 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { auth } from "@/firebase"
 
-export default {
-    name: "About",
-    setup() {
-        const signOut = () => {
-            auth.signOut()
-        }
-
-        return {
-            signOut,
-        }
-    },
+const signOut = () => {
+    auth.signOut()
 }
 </script>

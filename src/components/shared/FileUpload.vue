@@ -1,5 +1,11 @@
 <template>
-    <div class="border border-dashed rounded-xl bg-opacity-90" :class="{ 'bg-gray-500': dragging, 'bg-gray-800 ': !dragging }" @drop.prevent="addFile" @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false">
+    <div
+        class="border border-dashed rounded-xl bg-opacity-90"
+        :class="{ 'bg-gray-500': dragging, 'bg-gray-800 ': !dragging }"
+        @drop.prevent="addFile"
+        @dragover.prevent="dragging = true"
+        @dragleave.prevent="dragging = false"
+    >
         <label class="block p-4 cursor-pointer" :for="`assetField-${id}`">
             <input
                 :id="`assetField-${id}`"
@@ -17,51 +23,39 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed, ref, toRefs } from "vue"
 const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
 import { useStore } from "vuex"
-export default {
-    props: {
-        file: Object,
-        id: String,
-    },
-    emits: ["update:file"],
-    setup(props, { emit }) {
-        const { file, id } = toRefs(props)
-        const fileEl = ref(null)
-        const store = useStore()
 
-        const dragging = ref(false)
+const emit = defineEmits(["update:file"])
+const props = defineProps({
+    file: Object,
+    id: String,
+})
+const { file, id } = toRefs(props)
+const fileEl = ref(null)
+const store = useStore()
 
-        const addFile = (e) => {
-            emitFileInformation(e.dataTransfer.files)
-        }
+const dragging = ref(false)
 
-        const onChangeFile = (e) => {
-            emitFileInformation(e.target.files)
-        }
+const addFile = (e) => {
+    emitFileInformation(e.dataTransfer.files)
+}
 
-        const emitFileInformation = async (files) => {
-            const firstFile = files?.[0]
-            if (firstFile?.type?.match(IMAGE_TYPES)) {
-                dragging.value = false
-                // unWrappedFile.value = files[0]
-                //fileEl.value.files = files
-                emit("update:file", firstFile)
-            } else {
-                alert("Please only upload image file types!")
-            }
-        }
+const onChangeFile = (e) => {
+    emitFileInformation(e.target.files)
+}
 
-        return {
-            id,
-            file,
-            fileEl,
-            addFile,
-            onChangeFile,
-            dragging,
-        }
-    },
+const emitFileInformation = async (files) => {
+    const firstFile = files?.[0]
+    if (firstFile?.type?.match(IMAGE_TYPES)) {
+        dragging.value = false
+        // unWrappedFile.value = files[0]
+        //fileEl.value.files = files
+        emit("update:file", firstFile)
+    } else {
+        alert("Please only upload image file types!")
+    }
 }
 </script>

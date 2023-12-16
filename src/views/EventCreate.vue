@@ -8,10 +8,9 @@
     </div>
 </template>
 
-    
 <script>
 import { useStore } from "vuex"
-import Button from "@/components/shared/Button"
+import Button from "@/components/shared/Button.vue"
 import { useRouter } from "vue-router"
 import { HOME } from "@/router"
 import { ref, onMounted } from "vue"
@@ -51,5 +50,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

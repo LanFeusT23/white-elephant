@@ -21,23 +21,20 @@ async function initializeGame(eventId) {
 
     const ids = []
 
-    usersQuery.forEach(userSnap => {
+    usersQuery.forEach((userSnap) => {
         ids.push(userSnap.id)
     })
 
     const randomizedIds = _shuffle(ids)
 
     randomizedIds.forEach((id, index) => {
-        eventRef
-            .collection("users")
-            .doc(id)
-            .update({
-                order: index
-            })
+        eventRef.collection("users").doc(id).update({
+            order: index,
+        })
     })
 
     eventRef.update({
-        currentPlayer: randomizedIds[0]
+        currentPlayer: randomizedIds[0],
     })
 }
 
@@ -64,19 +61,16 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
     //SELECTED BY CHANGES (PLAYER CHOSES A GIFT)
     if (before.selectedBy !== after.selectedBy && after.selectedBy != null) {
         //marks the person who just selected a gift
-        await eventRef
-            .collection("users")
-            .doc(after.selectedBy)
-            .update({
-                selectedGift: true
-            })
+        await eventRef.collection("users").doc(after.selectedBy).update({
+            selectedGift: true,
+        })
 
         if (before.selectedBy != null) {
             //A STEAL TOOK PLACE
             const giftsRef = eventRef.collection("gifts")
 
             await giftsRef.doc(giftId).update({
-                stolenCount: admin.firestore.FieldValue.increment(1)
+                stolenCount: admin.firestore.FieldValue.increment(1),
             })
 
             // const eventFinalRoundCheck = await (await eventRef.get()).data()
@@ -98,33 +92,24 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
             // }
 
             await eventRef.update({
-                currentPlayer: before.selectedBy
+                currentPlayer: before.selectedBy,
             })
         } else {
             //gets the next player
-            const nextPlayerSnap = await eventRef
-                .collection("users")
-                .where("selectedGift", "==", false)
-                .orderBy("order")
-                .limit(1)
-                .get()
+            const nextPlayerSnap = await eventRef.collection("users").where("selectedGift", "==", false).orderBy("order").limit(1).get()
 
             if (!nextPlayerSnap.empty) {
                 const nextPlayer = nextPlayerSnap.docs[0]
 
                 //set the next player on the event
                 eventRef.update({
-                    currentPlayer: nextPlayer.id
+                    currentPlayer: nextPlayer.id,
                 })
             } else {
                 //ENABLE BONUS ROUND OF DEATH
                 console.log("NO MORE")
 
-                const firstPlayerSnap = await eventRef
-                    .collection("users")
-                    .orderBy("order")
-                    .limit(1)
-                    .get()
+                const firstPlayerSnap = await eventRef.collection("users").orderBy("order").limit(1).get()
 
                 if (!firstPlayerSnap.empty) {
                     const firstPlayer = firstPlayerSnap.docs[0]
@@ -133,12 +118,12 @@ exports.giftUpdate = functions.firestore.document("events/{eventId}/gifts/{giftI
 
                     if (eventFinalRoundCheck.finalRound) {
                         eventRef.update({
-                            currentPlayer: null
+                            currentPlayer: null,
                         })
                     } else {
                         eventRef.update({
                             currentPlayer: firstPlayer.id,
-                            finalRound: true
+                            finalRound: true,
                         })
                     }
                 }
