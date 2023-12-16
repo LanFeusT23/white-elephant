@@ -23,7 +23,7 @@
         </div>
 
         <div class="absolute cursor-pointer top-4 right-6" @click="closeModal">
-            <i class="fa fa-times"></i>
+            <IconTimes></IconTimes>
         </div>
     </Modal>
 </template>
@@ -32,10 +32,11 @@
 import Gift from "@/components/home/Gift.vue"
 import Modal from "@/components/shared/Modal.vue"
 import Button from "@/components/shared/Button.vue"
-import { computed, ref, toRefs, watch } from "vue"
+import { computed, toRefs } from "vue"
 import { useStore } from "vuex"
-import { firestore, serverTimestamp } from "@/firebase"
+import { firestore } from "@/firebase"
 import { useRoute } from "vue-router"
+import IconTimes from "~icons/fa/times"
 
 const props = defineProps({ selectedGift: Object })
 const emit = defineEmits(["close-modal"])
