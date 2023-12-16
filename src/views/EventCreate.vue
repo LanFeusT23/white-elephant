@@ -8,7 +8,6 @@
     </div>
 </template>
 
-    
 <script>
 import { useStore } from "vuex"
 import Button from "@/components/shared/Button.vue"
@@ -51,5 +50,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

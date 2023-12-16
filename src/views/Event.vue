@@ -18,75 +18,59 @@
     </div>
 </template>
 
-<script>
-import Home from "@/views/Home.vue"
-import Upload from "@/views/Upload.vue"
+<script setup>
 import Button from "@/components/shared/Button.vue"
 import { computed, toRefs, watch, onMounted } from "vue"
 import { useStore } from "vuex"
 import { useRoute } from "vue-router"
 import { firestore } from "@/firebase"
 
-export default {
-    props: {
-        eventId: String,
+const props = defineProps({ eventId: String })
+const route = useRoute()
+const store = useStore()
+
+const { eventId } = toRefs(props)
+const event = computed(() => {
+    return store.state.event
+})
+
+const isAdminUser = computed(() => {
+    return store.state.user != undefined && store.state.user.uid === event.value?.createdBy
+})
+
+watch(
+    event,
+    (e) => {
+        document.title = `${e?.name} | WEEP`
     },
-    setup(props) {
-        const route = useRoute()
-        const store = useStore()
+    { immediate: true },
+)
 
-        const { eventId } = toRefs(props)
-        const event = computed(() => {
-            return store.state.event
-        })
+let unsubscribeEvent
+watch(
+    eventId,
+    (newId, oldId) => {
+        unsubscribeEvent?.()
 
-        const isAdminUser = computed(() => {
-            return store.state.user != undefined && store.state.user.uid === event.value?.createdBy
-        })
+        unsubscribeEvent = firestore
+            .collection("events")
+            .doc(newId)
+            .onSnapshot((snapshot) => {
+                const event = snapshot.data()
 
-        watch(
-            event,
-            (e) => {
-                document.title = `${e?.name} | WEEP`
-            },
-            { immediate: true }
-        )
-
-        let unsubscribeEvent
-        watch(
-            eventId,
-            (newId, oldId) => {
-                unsubscribeEvent?.()
-
-                unsubscribeEvent = firestore
-                    .collection("events")
-                    .doc(newId)
-                    .onSnapshot((snapshot) => {
-                        const event = snapshot.data()
-
-                        store.commit("setEvent", event)
-                    })
-            },
-            { immediate: true }
-        )
-
-        const startEvent = async () => {
-            firestore.collection("events").doc(eventId.value).update({
-                started: true,
+                store.commit("setEvent", event)
             })
-        }
-
-        const isLoggedInUsersTurn = computed(() => {
-            return store.getters.isLoggedInUsersTurn
-        })
-
-        return {
-            Button,
-            isAdminUser,
-            event,
-            isLoggedInUsersTurn,
-            startEvent,
-        }
     },
+    { immediate: true },
+)
+
+const startEvent = async () => {
+    firestore.collection("events").doc(eventId.value).update({
+        started: true,
+    })
 }
+
+const isLoggedInUsersTurn = computed(() => {
+    return store.getters.isLoggedInUsersTurn
+})
 </script>

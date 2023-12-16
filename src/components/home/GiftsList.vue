@@ -14,119 +14,101 @@
     </teleport>
 </template>
 
-<script>
+<script setup>
 import { computed, onUnmounted, ref, toRefs } from "vue"
 import Gift from "@/components/home/Gift.vue"
 import GiftsModal from "@/components/home/GiftsModal.vue"
-import Button from "@/components/shared/Button.vue"
 import firebaseListChangeHelper from "@/helpers/firebaseListChangeHelper"
 import { firestore } from "@/firebase"
 import { useRoute } from "vue-router"
 import { useStore } from "vuex"
 import orderBy from "lodash/orderBy"
 
-export default {
-    name: "GiftsList",
-    setup() {
-        const route = useRoute()
-        const store = useStore()
-        const selectedGiftId = ref()
-        const loading = ref(true)
-        const selectedGift = computed(() => {
-            return finalGifts.value.find((x) => x.id === selectedGiftId.value)
-        })
+const route = useRoute()
+const store = useStore()
+const selectedGiftId = ref()
+const loading = ref(true)
+const selectedGift = computed(() => {
+    return finalGifts.value.find((x) => x.id === selectedGiftId.value)
+})
 
-        const openModal = (giftId) => {
-            selectedGiftId.value = giftId
-        }
-
-        const closeModal = () => {
-            selectedGiftId.value = undefined
-        }
-
-        const isOpenModal = computed(() => {
-            return selectedGiftId.value != null
-        })
-
-        const eventRef = firestore.collection("events").doc(route.params.eventId)
-        const giftsRef = eventRef.collection("gifts")
-        const usersRef = eventRef.collection("users")
-
-        const unWrappedGiftsList = ref([])
-        const unsubscribeGifts = giftsRef.where("revealed", "==", true).onSnapshot((snapshot) => {
-            loading.value = false
-            snapshot.docChanges().forEach((change) => {
-                firebaseListChangeHelper(change, unWrappedGiftsList)
-            })
-        })
-
-        const wrappedGiftsList = ref([])
-        const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) => {
-            loading.value = false
-            snapshot.docChanges().forEach((change) => {
-                firebaseListChangeHelper(change, wrappedGiftsList)
-            })
-        })
-
-        const event = computed(() => {
-            return store.state.event
-        })
-
-        const finalGifts = computed(() => {
-            const unWrappedGifts = unWrappedGiftsList.value
-            const wrappedGifts = wrappedGiftsList.value
-
-            const giftCards = wrappedGifts.map((wrappedGift) => {
-                // users and gifts share the same id from the user's uid
-                const unwrappedGift = unWrappedGifts.find((x) => x.id === wrappedGift.id)
-                const selectedByUser = wrappedGifts.find((x) => x.id === unwrappedGift?.selectedBy)
-
-                let newGift = {
-                    ...wrappedGift,
-                    selectedByName: "Not Selected",
-                    notAvailable: false,
-                    giftUrl: wrappedGift?.wrappedGiftUrl,
-                    selectedBy: undefined,
-                    isClaimed: false,
-                    stolenCount: 0,
-                }
-
-                if (unwrappedGift) {
-                    newGift = {
-                        ...unwrappedGift,
-                        ...wrappedGift,
-                        selectedBy: unwrappedGift.selectedBy,
-                        giftUrl: unwrappedGift.unwrappedGiftUrl,
-                        selectedByName: selectedByUser?.displayName,
-                        notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
-                        isClaimed: true,
-                    }
-                }
-
-                return newGift
-            })
-
-            return orderBy(giftCards, "id", "desc")
-        })
-
-        onUnmounted(() => {
-            unsubscribeGifts()
-            unsubscribeUsers()
-        })
-
-        return {
-            Gift,
-            GiftsModal,
-            Button,
-            isOpenModal,
-            openModal,
-            closeModal,
-            finalGifts,
-            selectedGift,
-            loading,
-        }
-    },
+const openModal = (giftId) => {
+    selectedGiftId.value = giftId
 }
+
+const closeModal = () => {
+    selectedGiftId.value = undefined
+}
+
+const isOpenModal = computed(() => {
+    return selectedGiftId.value != null
+})
+
+const eventRef = firestore.collection("events").doc(route.params.eventId)
+const giftsRef = eventRef.collection("gifts")
+const usersRef = eventRef.collection("users")
+
+const unWrappedGiftsList = ref([])
+const unsubscribeGifts = giftsRef.where("revealed", "==", true).onSnapshot((snapshot) => {
+    loading.value = false
+    snapshot.docChanges().forEach((change) => {
+        firebaseListChangeHelper(change, unWrappedGiftsList)
+    })
+})
+
+const wrappedGiftsList = ref([])
+const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) => {
+    loading.value = false
+    snapshot.docChanges().forEach((change) => {
+        firebaseListChangeHelper(change, wrappedGiftsList)
+    })
+})
+
+const event = computed(() => {
+    return store.state.event
+})
+
+const finalGifts = computed(() => {
+    const unWrappedGifts = unWrappedGiftsList.value
+    const wrappedGifts = wrappedGiftsList.value
+
+    const giftCards = wrappedGifts.map((wrappedGift) => {
+        // users and gifts share the same id from the user's uid
+        const unwrappedGift = unWrappedGifts.find((x) => x.id === wrappedGift.id)
+        const selectedByUser = wrappedGifts.find((x) => x.id === unwrappedGift?.selectedBy)
+
+        let newGift = {
+            ...wrappedGift,
+            selectedByName: "Not Selected",
+            notAvailable: false,
+            giftUrl: wrappedGift?.wrappedGiftUrl,
+            selectedBy: undefined,
+            isClaimed: false,
+            stolenCount: 0,
+        }
+
+        if (unwrappedGift) {
+            newGift = {
+                ...unwrappedGift,
+                ...wrappedGift,
+                selectedBy: unwrappedGift.selectedBy,
+                giftUrl: unwrappedGift.unwrappedGiftUrl,
+                selectedByName: selectedByUser?.displayName,
+                notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
+                isClaimed: true,
+            }
+        }
+
+        return newGift
+    })
+
+    return orderBy(giftCards, "id", "desc")
+})
+
+onUnmounted(() => {
+    unsubscribeGifts()
+    unsubscribeUsers()
+})
 </script>
 
 <style lang="scss" scoped>

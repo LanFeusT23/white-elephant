@@ -6,8 +6,8 @@
 
         <template v-else>
             <div class="mt-2">
-                <div class="text-lg">Brief description of the gift (required, max {{ giftDescription.length }} / 40 chars)</div>
-                <input maxlength="40" v-model="giftDescription" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg w-96 focus:outline-none active:outline-none" />
+                <div class="text-lg">Brief description of the gift (required, max {{ formData.giftDescription.length }} / 40 chars)</div>
+                <input maxlength="40" v-model="formData.giftDescription" class="px-4 py-1 mb-2 text-black bg-white border rounded-lg w-96 focus:outline-none active:outline-none" />
             </div>
 
             <div class="flex gap-8 mt-2">
@@ -36,7 +36,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Button from "@/components/shared/Button.vue"
 import FileUpload from "@/components/shared/FileUpload.vue"
 import { computed, onMounted, reactive, ref, toRefs, watch } from "vue"
@@ -51,137 +51,117 @@ function getExtension(file) {
     return file.type.split("/").pop()
 }
 
-export default {
-    setup() {
-        const loading = ref(false)
-        const route = useRoute()
-        const router = useRouter()
-        const store = useStore()
-        const { uid, displayName } = store.state.user
-        const eventHasStarted = computed(() => {
-            return store.state.event.started
-        })
+const loading = ref(false)
+const route = useRoute()
+const router = useRouter()
+const store = useStore()
+const { uid, displayName } = store.state.user
+const eventHasStarted = computed(() => {
+    return store.state.event.started
+})
 
-        const eventId = route.params.eventId
-        const eventRef = firestore.collection("events").doc(eventId)
-        const giftsRef = eventRef.collection("gifts")
-        const usersRef = eventRef.collection("users")
+const eventId = route.params.eventId
+const eventRef = firestore.collection("events").doc(eventId)
+const giftsRef = eventRef.collection("gifts")
+const usersRef = eventRef.collection("users")
 
-        const formData = reactive({
-            giftDescription: "",
-            unwrappedImageUrl: "",
-            wrappedImageUrl: "",
-        })
+const formData = reactive({
+    giftDescription: "",
+    unwrappedImageUrl: "",
+    wrappedImageUrl: "",
+})
 
-        const unWrappedFile = ref()
-        const wrappedFile = ref()
+const unWrappedFile = ref()
+const wrappedFile = ref()
 
-        const load = async () => {
-            const giftDoc = await giftsRef.doc(uid).get()
-            const giftData = giftDoc.data()
-            formData.giftDescription = giftData?.description ?? ""
+const load = async () => {
+    const giftDoc = await giftsRef.doc(uid).get()
+    const giftData = giftDoc.data()
+    formData.giftDescription = giftData?.description ?? ""
 
-            formData.unwrappedImageUrl = giftData?.unwrappedGiftUrl
+    formData.unwrappedImageUrl = giftData?.unwrappedGiftUrl
 
-            const userDoc = await usersRef.doc(uid).get()
-            const userData = userDoc.data()
+    const userDoc = await usersRef.doc(uid).get()
+    const userData = userDoc.data()
 
-            formData.wrappedImageUrl = userData?.wrappedGiftUrl
-        }
+    formData.wrappedImageUrl = userData?.wrappedGiftUrl
+}
 
-        load()
+load()
 
-        const unwrappedImagePreview = computed(() => {
-            if (unWrappedFile.value != null) {
-                return URL.createObjectURL(unWrappedFile.value)
-            }
+const unwrappedImagePreview = computed(() => {
+    if (unWrappedFile.value != null) {
+        return URL.createObjectURL(unWrappedFile.value)
+    }
 
-            return formData.unwrappedImageUrl
-        })
+    return formData.unwrappedImageUrl
+})
 
-        const wrappedImagePreview = computed(() => {
-            if (wrappedFile.value != null) {
-                return URL.createObjectURL(wrappedFile.value)
-            }
+const wrappedImagePreview = computed(() => {
+    if (wrappedFile.value != null) {
+        return URL.createObjectURL(wrappedFile.value)
+    }
 
-            return formData.wrappedImageUrl
-        })
+    return formData.wrappedImageUrl
+})
 
-        const disableButton = computed(() => {
-            return (
-                wrappedImagePreview.value == null ||
-                unwrappedImagePreview.value == null ||
-                formData.giftDescription == null ||
-                formData.giftDescription.trim() == "" ||
-                formData.giftDescription?.length > 40 ||
-                loading.value === true
-            )
-        })
+const disableButton = computed(() => {
+    return (
+        wrappedImagePreview.value == null ||
+        unwrappedImagePreview.value == null ||
+        formData.giftDescription == null ||
+        formData.giftDescription.trim() == "" ||
+        formData.giftDescription?.length > 40 ||
+        loading.value === true
+    )
+})
 
-        const upload = async () => {
-            loading.value = true
-            let unwrappedImageUrl = formData.unwrappedImageUrl
+const upload = async () => {
+    loading.value = true
+    let unwrappedImageUrl = formData.unwrappedImageUrl
 
-            if (unWrappedFile.value != null) {
-                const unwrappedExtension = getExtension(unWrappedFile.value)
-                const unwrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/unwrapped.${unwrappedExtension}`).put(unWrappedFile.value)
-                unwrappedImageUrl = await unwrappedFileRef.ref.getDownloadURL()
-            }
+    if (unWrappedFile.value != null) {
+        const unwrappedExtension = getExtension(unWrappedFile.value)
+        const unwrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/unwrapped.${unwrappedExtension}`).put(unWrappedFile.value)
+        unwrappedImageUrl = await unwrappedFileRef.ref.getDownloadURL()
+    }
 
-            let wrappedImageUrl = formData.wrappedImageUrl
-            if (wrappedFile.value != null) {
-                const wrappedExtension = getExtension(wrappedFile.value)
-                const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
-                wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
-            }
+    let wrappedImageUrl = formData.wrappedImageUrl
+    if (wrappedFile.value != null) {
+        const wrappedExtension = getExtension(wrappedFile.value)
+        const wrappedFileRef = await storage.child(`events/${eventId}/images/${uid}/wrapped.${wrappedExtension}`).put(wrappedFile.value)
+        wrappedImageUrl = await wrappedFileRef.ref.getDownloadURL()
+    }
 
-            const newGift = await giftsRef.doc(uid).set(
-                {
-                    revealed: false,
-                    selectedBy: null,
-                    stolenCount: 0,
-                    unwrappedGiftUrl: unwrappedImageUrl,
-                    description: formData.giftDescription,
-                },
-                { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
-            )
+    const newGift = await giftsRef.doc(uid).set(
+        {
+            revealed: false,
+            selectedBy: null,
+            stolenCount: 0,
+            unwrappedGiftUrl: unwrappedImageUrl,
+            description: formData.giftDescription,
+        },
+        { merge: false }, //false - security rules should only allow this to be updated when event hasnt been started
+    )
 
-            const newUser = await usersRef.doc(uid).set(
-                {
-                    wrappedGiftUrl: wrappedImageUrl,
-                    displayName: displayName,
-                    readyToPlay: true,
-                    order: null,
-                    selectedGift: false,
-                },
-                { merge: false } //false - security rules should only allow this to be updated when event hasnt been started
-            )
+    const newUser = await usersRef.doc(uid).set(
+        {
+            wrappedGiftUrl: wrappedImageUrl,
+            displayName: displayName,
+            readyToPlay: true,
+            order: null,
+            selectedGift: false,
+        },
+        { merge: false }, //false - security rules should only allow this to be updated when event hasnt been started
+    )
 
-            loading.value = false
+    loading.value = false
 
-            router.push(HOME)
-        }
+    router.push(HOME)
+}
 
-        const goToEvent = () => {
-            router.push(HOME)
-        }
-
-        return {
-            Button,
-            FileUpload,
-            ...toRefs(formData),
-            disableButton,
-            upload,
-            goToEvent,
-            wrappedFile,
-            unWrappedFile,
-            wrappedImagePreview,
-            unwrappedImagePreview,
-            loading,
-            eventHasStarted,
-            HOME
-        }
-    },
+const goToEvent = () => {
+    router.push(HOME)
 }
 </script>
 

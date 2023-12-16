@@ -8,7 +8,8 @@
         "test": "",
         "test-watch": "",
         "emulators": "firebase emulators:start --inspect-functions",
-        "serveProd": "vite"
+        "serveProd": "vite",
+        "prettify": "prettier . --write"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.5.1",
@@ -29,6 +30,7 @@
         "autoprefixer": "^10.4.16",
         "firebase-admin": "^9.4.2",
         "postcss": "^8.4.32",
+        "prettier": "^3.1.1",
         "sass": "^1.69.5",
         "sass-loader": "^13.3.2",
         "tailwindcss": "^3.3.6",

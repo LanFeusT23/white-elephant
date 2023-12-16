@@ -7,13 +7,13 @@ import { readFileSync, readFile } from "fs"
 export function getNormalFirestore(auth) {
     return initializeTestApp({
         projectId,
-        auth
+        auth,
     }).firestore()
 }
 
 export function getAdminFirestore() {
     return initializeAdminApp({
-        projectId
+        projectId,
     }).firestore()
 }
 
@@ -21,7 +21,7 @@ export async function setup(auth, data) {
     // Apply rules
     await loadFirestoreRules({
         projectId,
-        rules: readFileSync("./firestore.rules", "utf8")
+        rules: readFileSync("./firestore.rules", "utf8"),
     })
 }
 

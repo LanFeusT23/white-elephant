@@ -17,7 +17,7 @@ const firebaseConfig = {
     storageBucket: "white-elephant-capps.appspot.com",
     messagingSenderId: "665520767358",
     appId: "1:665520767358:web:6da4eb0ff59e86745fb32f",
-    measurementId: "G-RGQHLP6N55"
+    measurementId: "G-RGQHLP6N55",
 }
 
 const app = firebase.initializeApp(firebaseConfig)
@@ -32,12 +32,12 @@ export const googleAuth = new firebase.auth.GoogleAuthProvider()
 export const sessionPersistence = firebase.auth.Auth.Persistence.SESSION
 
 export const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp
-
-if (process.env.VUE_APP_EMULATE) {
+console.log("asdasD", import.meta.env.VITE_APP_EMULATE)
+if (import.meta.env.VITE_APP_EMULATE) {
     console.log("emulating")
     firestore.settings({
         host: `localhost:${firebaseSettings.emulators.firestore.port}`,
-        ssl: false
+        ssl: false,
     })
 
     firebase.auth().useEmulator(`http://localhost:${firebaseSettings.emulators.auth.port}/`)
