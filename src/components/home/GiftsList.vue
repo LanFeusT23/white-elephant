@@ -64,14 +64,14 @@ const unsubscribeUsers = usersRef.orderBy("displayName").onSnapshot((snapshot) =
     })
 })
 
-        const event = computed(() => {
-            return store.state.event
-        })
+const event = computed(() => {
+    return store.state.event
+})
 
-        const replaceWithResizedUrl = (url) => {
-            // wrapped and unwrapped both contain the word "wrapped" so this will work for both
-            return url?.replace("wrapped.", "wrapped_400x400.")
-        }
+const replaceWithResizedUrl = (url) => {
+    // wrapped and unwrapped both contain the word "wrapped" so this will work for both
+    return url?.replace("wrapped.", "wrapped_400x400.")
+}
 
 const finalGifts = computed(() => {
     const unWrappedGifts = unWrappedGiftsList.value
@@ -82,27 +82,27 @@ const finalGifts = computed(() => {
         const unwrappedGift = unWrappedGifts.find((x) => x.id === wrappedGift.id)
         const selectedByUser = wrappedGifts.find((x) => x.id === unwrappedGift?.selectedBy)
 
-                let newGift = {
-                    ...wrappedGift,
-                    selectedByName: "Not Selected",
-                    notAvailable: false,
-                    giftUrl: replaceWithResizedUrl(wrappedGift?.wrappedGiftUrl),
-                    selectedBy: undefined,
-                    isClaimed: false,
-                    stolenCount: 0,
-                }
+        let newGift = {
+            ...wrappedGift,
+            selectedByName: "Not Selected",
+            notAvailable: false,
+            giftUrl: replaceWithResizedUrl(wrappedGift?.wrappedGiftUrl),
+            selectedBy: undefined,
+            isClaimed: false,
+            stolenCount: 0,
+        }
 
-                if (unwrappedGift) {
-                    newGift = {
-                        ...unwrappedGift,
-                        ...wrappedGift,
-                        selectedBy: unwrappedGift.selectedBy,
-                        giftUrl: replaceWithResizedUrl(unwrappedGift.unwrappedGiftUrl),
-                        selectedByName: selectedByUser?.displayName,
-                        notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
-                        isClaimed: true,
-                    }
-                }
+        if (unwrappedGift) {
+            newGift = {
+                ...unwrappedGift,
+                ...wrappedGift,
+                selectedBy: unwrappedGift.selectedBy,
+                giftUrl: replaceWithResizedUrl(unwrappedGift.unwrappedGiftUrl),
+                selectedByName: selectedByUser?.displayName,
+                notAvailable: event.value.maxSteals <= unwrappedGift.stolenCount,
+                isClaimed: true,
+            }
+        }
 
         return newGift
     })
