@@ -16,19 +16,11 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { onMounted } from "vue"
 import { EVENTSLANDING } from "@/router"
 
-export default {
-    setup() {
-        onMounted(() => {
-            document.title = "Landing | WEEP"
-        })
-
-        return {
-            EVENTSLANDING,
-        }
-    },
-}
+onMounted(() => {
+    document.title = "Landing | WEEP"
+})
 </script>

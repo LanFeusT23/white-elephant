@@ -2,7 +2,7 @@
     <div class="gift" :class="cssClasses">
         <slot name="header"></slot>
 
-        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 gift__img filter-shadow rounded-xl bg-gray-900">
+        <div :class="{ 'h-32': !big, 'h-96': big }" class="h-32 bg-gray-900 gift__img filter-shadow rounded-xl">
             <img :src="giftUrl" class="object-cover w-full h-full rounded-xl" alt="" />
         </div>
 
@@ -14,41 +14,30 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed, toRefs } from "vue"
-export default {
-    props: {
-        id: String,
-        stolenCount: Number,
-        notAvailable: Boolean,
-        selectedByName: String,
-        selectedBy: String,
-        big: Boolean,
-        isClaimed: Boolean,
-        giftUrl: String,
-    },
-    setup(props) {
-        const { id, giftUrl, isClaimed, selectedByName, big, stolenCount, notAvailable } = toRefs(props)
 
-        const cssClasses = computed(() => {
-            return {
-                "gift--not-available": notAvailable.value,
-                "gift--stolen": stolenCount?.value === 1,
-                "gift--stolen-2": stolenCount?.value === 2,
-                "w-32": !big.value,
-                "w-96": big.value,
-            }
-        })
+const props = defineProps({
+    id: String,
+    stolenCount: Number,
+    notAvailable: Boolean,
+    selectedByName: String,
+    selectedBy: String,
+    big: Boolean,
+    isClaimed: Boolean,
+    giftUrl: String,
+})
+const { id, giftUrl, isClaimed, selectedByName, big, stolenCount, notAvailable } = toRefs(props)
 
-        return {
-            cssClasses,
-            giftUrl,
-            selectedByName,
-            isClaimed,
-            id,
-        }
-    },
-}
+const cssClasses = computed(() => {
+    return {
+        "gift--not-available": notAvailable.value,
+        "gift--stolen": stolenCount?.value === 1,
+        "gift--stolen-2": stolenCount?.value === 2,
+        "w-32": !big.value,
+        "w-96": big.value,
+    }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -111,7 +100,7 @@ export default {
     }
 
     &__username {
-        filter: drop-shadow(4px 4px 8px black)
+        filter: drop-shadow(4px 4px 8px black);
     }
 }
 </style>

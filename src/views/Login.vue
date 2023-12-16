@@ -13,7 +13,7 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { computed, watch, onMounted } from "vue"
 import { auth, googleAuth } from "@/firebase.js"
 import { useRoute, useRouter } from "vue-router"
@@ -21,38 +21,29 @@ import store from "@/store"
 
 import { LANDING } from "@/router"
 
-export default {
-    name: "Login",
-    setup() {
-        const route = useRoute()
-        const router = useRouter()
+const route = useRoute()
+const router = useRouter()
 
-        const loginWithGoogle = async () => {
-            await auth.signInWithPopup(googleAuth)
-        }
-
-        onMounted(() => {
-            document.title = "Login | WEEP"
-        })
-
-        //we can probably watchEffect to combine this computed and watch
-        const user = computed(() => store.state.user)
-
-        watch(user, (u) => {
-            if (u != null) {
-                if (route.query.redirect != null) {
-                    router.push(route.query.redirect)
-                } else {
-                    router.push(LANDING)
-                }
-            }
-        })
-
-        return {
-            loginWithGoogle,
-        }
-    },
+const loginWithGoogle = async () => {
+    await auth.signInWithPopup(googleAuth)
 }
+
+onMounted(() => {
+    document.title = "Login | WEEP"
+})
+
+//we can probably watchEffect to combine this computed and watch
+const user = computed(() => store.state.user)
+
+watch(user, (u) => {
+    if (u != null) {
+        if (route.query.redirect != null) {
+            router.push(route.query.redirect)
+        } else {
+            router.push(LANDING)
+        }
+    }
+})
 </script>
 
 <style lang="scss" scoped>
