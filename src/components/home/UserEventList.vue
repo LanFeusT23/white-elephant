@@ -7,12 +7,8 @@
         </div>
 
         <ol class="pl-10" :class="{ 'list-decimal': event?.started }">
-            <li
-                v-for="user in users"
-                :key="user.id"
-                class="relative text-xl"
-                :class="{ active: event?.currentPlayer === user.id, 'opacity-50': user.selectedGift && event?.currentPlayer !== user.id }"
-            >
+            <li v-for="user in users" :key="user.id" class="relative text-xl" :class="{ 'text-yellow-400': isActive(user.id), 'opacity-50': user.selectedGift && !isActive(user.id) }">
+                <IconGift v-if="isActive(user.id)" class="absolute -left-14"></IconGift>
                 {{ user.displayName }}
             </li>
         </ol>
@@ -21,13 +17,14 @@
 
 <script setup>
 import Button from "@/components/shared/Button.vue"
-import { computed, ref, onUnmounted, watch } from "vue"
+import { computed, ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 import { useRoute, useRouter } from "vue-router"
 import { firestore } from "@/firebase"
 import { UPLOAD } from "@/router"
 import orderBy from "lodash/orderBy"
 import firebaseListChangeHelper from "@/helpers/firebaseListChangeHelper"
+import IconGift from "~icons/fa/gift"
 
 const route = useRoute()
 const router = useRouter()
@@ -76,19 +73,8 @@ const uploadText = computed(() => {
 const goToUpload = () => {
     router.push(UPLOAD)
 }
-</script>
 
-<style lang="scss" scoped>
-.active {
-    @apply text-yellow-400;
-
-    &::before {
-        position: absolute;
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f06b";
-        left: -3.5rem;
-        font-size: 1.5rem;
-    }
+const isActive = (userId) => {
+    return event.value?.currentPlayer === userId
 }
-</style>
+</script>

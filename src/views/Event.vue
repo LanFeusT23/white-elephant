@@ -9,7 +9,11 @@
                     </span>
                 </div>
 
-                <div v-if="isLoggedInUsersTurn" class="flex gap-4 text-4xl text-yellow-400"><i class="fa fa-gift" />Your turn to pick a gift<i class="fa fa-gift" /></div>
+                <div v-if="isLoggedInUsersTurn" class="flex gap-4 text-4xl text-yellow-400">
+                    <IconGift></IconGift>
+                    Your turn to pick a gift IconGift
+                    <IconGift></IconGift>
+                </div>
 
                 <Button v-if="isAdminUser" :disabled="event?.started" @click="startEvent"> Start Event </Button>
                 <div v-else></div>
@@ -24,6 +28,7 @@ import { computed, toRefs, watch, onMounted } from "vue"
 import { useStore } from "vuex"
 import { useRoute } from "vue-router"
 import { firestore } from "@/firebase"
+import IconGift from "~icons/fa/gift"
 
 const props = defineProps({ eventId: String })
 const route = useRoute()

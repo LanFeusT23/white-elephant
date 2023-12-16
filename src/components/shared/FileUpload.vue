@@ -17,16 +17,17 @@
                 accept=".jpg,.jpeg,.png"
             />
 
-            <div v-if="file"><i class="mb-2 fa fa-image"></i> {{ file?.name }}</div>
+            <div v-if="file"><IconImage class="mb-2"></IconImage> {{ file?.name }}</div>
             <div class="text-sm">Click here or drag an image</div>
         </label>
     </div>
 </template>
 
 <script setup>
-import { computed, ref, toRefs } from "vue"
+import { ref, toRefs } from "vue"
 const IMAGE_TYPES = /image\/(png|jpeg|jpg)/
 import { useStore } from "vuex"
+import IconImage from "~icons/fa/image"
 
 const emit = defineEmits(["update:file"])
 const props = defineProps({
